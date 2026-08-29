@@ -1,0 +1,1842 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brainlynsearch AI | Legal Records Search</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --bg: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 2rem;
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+            background-image:
+                radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.1) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(168, 85, 247, 0.08) 0px, transparent 50%),
+                url('/legal_bg.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            pointer-events: none;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .search-container {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            padding: 2rem;
+            border-radius: 24px;
+            border: 1px border var(--border);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            margin-bottom: 2rem;
+        }
+
+        .search-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr auto;
+            gap: 1rem;
+        }
+
+        input {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border);
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2);
+        }
+
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        .stats {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            padding-left: 1rem;
+        }
+
+        .results-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .card {
+            background: rgba(22, 30, 49, 0.98);
+            padding: 1.5rem;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            transition: border-color 0.2s, transform 0.2s, background-color 0.2s;
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        .card:hover {
+            border-color: var(--primary);
+            transform: scale(1.01);
+            background: rgba(30, 41, 59, 0.95);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .party-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .cnr-badge {
+            background: rgba(99, 102, 241, 0.35);
+            color: #e0e7ff;
+            border: 1px solid rgba(99, 102, 241, 0.5);
+            padding: 0.25rem 0.75rem;
+            border-radius: 99px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .label {
+            color: var(--text-muted);
+            margin-right: 0.5rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-muted);
+        }
+
+        .suggestions-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 0 0 12px 12px;
+            z-index: 100;
+            display: none;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .suggestion-item {
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .suggestion-item:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes spin {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes stroke {
+            0% {
+                stroke-dasharray: 1, 200;
+                stroke-dashoffset: 0;
+            }
+
+            50% {
+                stroke-dasharray: 90, 200;
+                stroke-dashoffset: -35px;
+            }
+
+            100% {
+                stroke-dasharray: 90, 200;
+                stroke-dashoffset: -124px;
+            }
+        }
+
+        /* Floating Action Bar */
+        .action-bar {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translate(-50%, 150px);
+            background: #1e293b;
+            border: 1px solid var(--primary);
+            padding: 1rem 2rem;
+            border-radius: 99px;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.4);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .action-bar.visible {
+            transform: translate(-50%, 0);
+        }
+
+        .record-checkbox,
+        .filter-checkbox {
+            width: 1.2rem !important;
+            height: 1.2rem !important;
+            cursor: pointer;
+            accent-color: var(--primary);
+            padding: 0 !important;
+            margin: 0 !important;
+            transition: none !important;
+            box-shadow: none !important;
+            background: transparent !important;
+            border: none !important;
+        }
+
+        .record-checkbox:focus,
+        .filter-checkbox:focus {
+            box-shadow: none !important;
+            outline: none !important;
+            border-color: transparent !important;
+        }
+
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* ── TAB NAV ── */
+        .tab-nav {
+            display: flex;
+            gap: 0;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tab-btn {
+            padding: .75rem 2rem;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            cursor: pointer;
+            position: relative;
+            transition: color .2s;
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--primary);
+            border-radius: 2px 2px 0 0;
+        }
+
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        /* ── SIDEBAR NAV ── */
+        body {
+            display: flex;
+            min-height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        .sidebar {
+            width: 260px;
+            background: #090d16;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 100;
+            padding: 24px;
+        }
+
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+
+        .sidebar-brand-name {
+            font-size: 1.25rem;
+            font-weight: 800;
+            background: linear-gradient(to right, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            flex-grow: 1;
+        }
+
+        .sidebar-menu-item a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: #94a3b8;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 500;
+            transition: all 0.3s;
+            cursor: pointer;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .sidebar-menu-item a:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: #f1f5f9;
+        }
+
+        .sidebar-menu-item.active a {
+            background: rgba(99, 102, 241, 0.15);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            color: #818cf8;
+        }
+
+        .sidebar-menu-item svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .sidebar-profile {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .profile-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .profile-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: white;
+            font-size: 1.1rem;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .profile-info {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .profile-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #f1f5f9;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .profile-role {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            font-family: 'Outfit', sans-serif;
+            text-transform: capitalize;
+        }
+
+        .sidebar-logout-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            background: rgba(255, 75, 75, 0.1);
+            border: 1px solid rgba(255, 75, 75, 0.2);
+            color: #ff4b4b;
+            padding: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .sidebar-logout-btn:hover {
+            background: rgba(255, 75, 75, 0.2);
+        }
+
+        .main-content {
+            flex-grow: 1;
+            margin-left: 260px;
+            padding: 40px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ── SCREENER PANEL ── */
+        .screener-card {
+            background: rgba(22, 30, 49, 0.95);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .screener-card h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text);
+        }
+
+        .drop-zone {
+            border: 2px dashed var(--primary);
+            border-radius: 12px;
+            padding: 3rem 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: background .2s;
+            color: var(--text-muted);
+        }
+
+        .drop-zone:hover,
+        .drop-zone.dragover {
+            background: rgba(99, 102, 241, .1);
+            color: var(--text);
+        }
+
+        .drop-zone input[type=file] {
+            display: none;
+        }
+
+        .screener-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 1rem;
+            align-items: end;
+            margin-top: 1.5rem;
+        }
+
+        .screener-controls label {
+            font-size: .8rem;
+            color: var(--primary);
+            font-weight: 600;
+            display: block;
+            margin-bottom: .4rem;
+        }
+
+        .screener-controls select,
+        .screener-controls input[type=range] {
+            width: 100%;
+            background: rgba(0, 0, 0, .3);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: white;
+            padding: .75rem 1rem;
+            font-size: .95rem;
+        }
+
+        .screener-controls select {
+            outline: none;
+        }
+
+        #thresholdVal {
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .progress-bar-wrap {
+            height: 6px;
+            background: rgba(255, 255, 255, .1);
+            border-radius: 4px;
+            margin: 1rem 0;
+            overflow: hidden;
+            display: none;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), #a855f7);
+            border-radius: 4px;
+            width: 0;
+            transition: width .3s;
+        }
+
+        .screener-summary {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+
+        .summ-chip {
+            background: rgba(22, 30, 49, 0.98);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: .6rem 1.2rem;
+            font-size: .9rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+        }
+
+        .summ-chip span {
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .result-card {
+            background: rgba(22, 30, 49, 0.98);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+            transition: border-color 0.2s, transform 0.2s, background-color 0.2s;
+        }
+
+        .result-card:hover {
+            border-color: var(--primary);
+            transform: scale(1.005);
+            background: rgba(30, 41, 59, 0.95);
+        }
+
+        .result-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.25rem 1.5rem;
+            cursor: pointer;
+            gap: 1rem;
+        }
+
+        .result-card-header:hover {
+            background: rgba(255, 255, 255, .04);
+        }
+
+        .result-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #ffffff;
+        }
+
+        .match-badge {
+            padding: .25rem .8rem;
+            border-radius: 99px;
+            font-size: .8rem;
+            font-weight: 600;
+            background: rgba(99, 102, 241, 0.35);
+            color: #e0e7ff;
+            border: 1px solid rgba(99, 102, 241, 0.5);
+        }
+
+        .match-badge.none {
+            background: rgba(239, 68, 68, .15);
+            color: #f87171;
+        }
+
+        .result-card-body {
+            display: none;
+            padding: 0 1.5rem 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(0, 0, 0, 0.15);
+        }
+
+        .result-card-body.open {
+            display: block;
+        }
+
+        .match-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: .85rem;
+            margin-top: .75rem;
+        }
+
+        .match-table th {
+            background: rgba(99, 102, 241, .15);
+            color: var(--primary);
+            padding: .5rem .75rem;
+            text-align: left;
+        }
+
+        .match-table td {
+            padding: .5rem .75rem;
+            border-bottom: 1px solid rgba(255, 255, 255, .06);
+        }
+
+        .sim-badge {
+            display: inline-block;
+            padding: .2rem .6rem;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: .8rem;
+        }
+
+        .sim-high {
+            background: rgba(5, 150, 105, .2);
+            color: #34d399;
+        }
+
+        .sim-mid {
+            background: rgba(217, 119, 6, .2);
+            color: #fbbf24;
+        }
+
+        .dl-btns {
+            display: flex;
+            gap: .5rem;
+            margin-top: 1rem;
+        }
+
+        .dl-btn {
+            padding: .4rem 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, .06);
+            color: var(--text);
+            font-size: .82rem;
+            cursor: pointer;
+            transition: background .2s;
+        }
+
+        .dl-btn:hover {
+            background: rgba(99, 102, 241, .2);
+            border-color: var(--primary);
+        }
+
+        .dl-btn.excel {
+            border-color: #059669;
+            color: #34d399;
+        }
+
+        .dl-btn.pdf {
+            border-color: #7c3aed;
+            color: #a78bfa;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem 0.5rem;
+            }
+
+            .container {
+                width: 100%;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .search-container {
+                padding: 1.25rem;
+                border-radius: 16px;
+                padding-bottom: 120px !important;
+                /* Prevent overlap with the floating action bar */
+            }
+
+            .search-grid {
+                grid-template-columns: 1fr !important;
+                gap: 0.75rem;
+            }
+
+            .search-grid>div {
+                width: 100% !important;
+            }
+
+            .screener-controls {
+                grid-template-columns: 1fr !important;
+                gap: 1rem;
+            }
+
+            .screener-card {
+                padding: 1.25rem;
+                padding-bottom: 120px !important;
+                /* Prevent overlap with the floating action bar */
+            }
+
+            .stats {
+                flex-direction: column;
+                gap: 0.5rem;
+                padding-left: 0.5rem;
+            }
+
+            .card-grid {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+
+            .action-bar {
+                width: calc(100% - 20px);
+                border-radius: 16px;
+                padding: 1rem;
+                flex-direction: column;
+                gap: 0.75rem;
+                text-align: center;
+            }
+
+            .action-bar button {
+                width: 100%;
+            }
+
+            .tab-nav {
+                flex-wrap: wrap;
+            }
+
+            .tab-btn {
+                flex: 1 1 auto;
+                padding: 0.75rem 1rem;
+                text-align: center;
+                font-size: 0.9rem;
+            }
+
+            .dl-btns {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .dl-btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        /* --- Premium UI Icon Styles --- */
+        .ui-icon {
+            width: 1.2rem;
+            height: 1.2rem;
+            vertical-align: middle;
+            display: inline-block;
+            margin-right: 0.5rem;
+            flex-shrink: 0;
+            transition: transform 0.25s ease, stroke 0.25s ease, fill 0.25s ease;
+        }
+
+        .tab-btn .ui-icon {
+            margin-top: -2px;
+        }
+
+        .tab-btn:hover .ui-icon {
+            transform: scale(1.1);
+        }
+
+        .tab-btn.active .ui-icon {
+            color: var(--primary);
+        }
+
+        .chevron-icon {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .screener-card h3 .ui-icon {
+            width: 1.5rem;
+            height: 1.5rem;
+            margin-top: -3px;
+        }
+
+        /* Custom Premium Range Slider */
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 99px;
+            border: none;
+            padding: 0 !important;
+            margin: 0.75rem 0 !important;
+            cursor: pointer;
+            outline: none;
+        }
+
+        input[type="range"]:focus {
+            box-shadow: none !important;
+            border-color: transparent !important;
+        }
+
+        input[type="range"]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 6px;
+            background: transparent;
+            border-radius: 99px;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--primary);
+            border: 2px solid #fff;
+            margin-top: -6px;
+            box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+            transition: transform 0.1s, background-color 0.2s;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            background: var(--primary-hover);
+        }
+
+        input[type="range"]::-moz-range-track {
+            width: 100%;
+            height: 6px;
+            background: transparent;
+            border-radius: 99px;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            background: var(--primary);
+            box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+            cursor: pointer;
+            transition: transform 0.1s, background-color 0.2s;
+        }
+
+        input[type="range"]::-moz-range-thumb:hover {
+            transform: scale(1.2);
+            background: var(--primary-hover);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Action Bar -->
+    <div id="actionBar" class="action-bar">
+        <span id="selectedCount" style="font-weight: 600;">0 Records Selected</span>
+        <button onclick="generatePDF()" style="padding: 0.5rem 1.5rem; height: auto;">Generate PDF Report</button>
+    </div>
+
+    <!-- Left Sidebar -->
+    <div class="sidebar">
+        <div>
+            <div class="sidebar-brand">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="color: #818cf8; filter: drop-shadow(0 0 8px rgba(129,102,241,0.35));">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                    <path d="M2 17l10 5 10-5"></path>
+                    <path d="M2 12l10 5 10-5"></path>
+                </svg>
+                <span class="sidebar-brand-name">Brainlynsearch</span>
+            </div>
+            <ul class="sidebar-menu">
+                <li class="sidebar-menu-item active" id="menu-search">
+                    <a onclick="switchSidebarTab('search')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                        Interactive Search
+                    </a>
+                </li>
+                <li class="sidebar-menu-item" id="menu-screener">
+                    <a onclick="switchSidebarTab('screener')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                        </svg>
+                        Batch Screener
+                    </a>
+                </li>
+                <li class="sidebar-menu-item" id="menu-analytics">
+                    <a href="/user_dashboard.html">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="20" x2="18" y2="10"></line>
+                            <line x1="12" y1="20" x2="12" y2="4"></line>
+                            <line x1="6" y1="20" x2="6" y2="14"></line>
+                        </svg>
+                        Analytics
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="sidebar-profile">
+            <div class="profile-card">
+                <div class="profile-avatar" id="profile-avatar-char">-</div>
+                <div class="profile-info">
+                    <span class="profile-name" id="profile-name-val">Loading...</span>
+                    <span class="profile-role" id="profile-role-val">User</span>
+                </div>
+            </div>
+            <button class="sidebar-logout-btn" onclick="handleLogout()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                    <polyline points="16 17 21 12 16 7"></polyline>
+                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                </svg>
+                Logout
+            </button>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="container">
+            <header>
+                <h1>Brainlynsearch AI</h1>
+                <p style="color: var(--text-muted)">High-Performance Legal Record Retrieval</p>
+            </header>
+
+            <!-- ── TAB NAVIGATION (Hidden) ── -->
+            <nav class="tab-nav" style="display: none;">
+                <button class="tab-btn active" onclick="switchTab('search',this)" id="tab-search">
+                    Interactive Search
+                </button>
+                <button class="tab-btn" onclick="switchTab('screener',this)" id="tab-screener">
+                    Batch Name Screener
+                </button>
+            </nav>
+
+        <!-- ══ TAB 1: EXISTING SEARCH (untouched) ══ -->
+        <div id="panel-search" class="tab-panel active">
+
+            <div class="search-container">
+                <!-- Mandatory Section -->
+                <div style="margin-bottom: 1.5rem;">
+                    <label
+                        style="font-size: 0.8rem; color: var(--primary); font-weight: 600; margin-bottom: 0.5rem; display: block;">ESSENTIAL
+                        SEARCH (REQUIRED)</label>
+                    <div class="search-grid" style="position: relative; grid-template-columns: 2fr 1fr 1fr 1fr;">
+                        <div style="position: relative;">
+                            <input type="text" id="nameInput" placeholder="Name *" onkeypress="handleKey(event)"
+                                autocomplete="off" oninput="handleInput(this.value, 'party_name', 'suggestionsName')"
+                                style="width: 100%">
+                            <div id="suggestionsName" class="suggestions-dropdown"></div>
+                            <div class="toggle-container"
+                                style="display: flex; gap: 1rem; margin-top: 0.5rem; padding-left: 0.25rem;">
+                                <label
+                                    style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.8rem; color: var(--text-muted); cursor: pointer; user-select: none;">
+                                    <input type="checkbox" id="petitionerToggle" class="filter-checkbox"
+                                        onchange="triggerLiveSearch()"
+                                        style="width: 0.95rem !important; height: 0.95rem !important; accent-color: var(--primary); cursor: pointer;">
+                                    Petitioner
+                                </label>
+                                <label
+                                    style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.8rem; color: var(--text-muted); cursor: pointer; user-select: none;">
+                                    <input type="checkbox" id="respondentToggle" class="filter-checkbox"
+                                        onchange="triggerLiveSearch()"
+                                        style="width: 0.95rem !important; height: 0.95rem !important; accent-color: var(--primary); cursor: pointer;">
+                                    Respondent
+                                </label>
+                            </div>
+                        </div>
+                        <div style="position: relative;">
+                            <input type="text" id="stateInput" placeholder="State" onkeypress="handleKey(event)"
+                                autocomplete="off" oninput="handleInput(this.value, 'state_name', 'suggestionsState')"
+                                style="width: 100%">
+                            <div id="suggestionsState" class="suggestions-dropdown"></div>
+                        </div>
+                        <div style="position: relative;">
+                            <input type="text" id="districtInput" placeholder="District" onkeypress="handleKey(event)"
+                                autocomplete="off"
+                                oninput="handleInput(this.value, 'district_name', 'suggestionsDistrict')"
+                                style="width: 100%">
+                            <div id="suggestionsDistrict" class="suggestions-dropdown"></div>
+                        </div>
+                        <div style="position: relative;">
+                            <select id="courtTypeInput"
+                                style="background: rgba(0, 0, 0, 0.2); border: 1px solid var(--border); padding: 1rem 1.5rem; border-radius: 12px; color: white; font-size: 1rem; outline: none; cursor: pointer; width: 100%;"
+                                onchange="triggerLiveSearch()">
+                                <option value="all" style="background: var(--bg)">All Courts</option>
+                                <option value="district" style="background: var(--bg)">District Courts</option>
+                                <option value="high" style="background: var(--bg)">High Courts</option>
+                                <option value="supreme" style="background: var(--bg)">Supreme Court</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Optional Section -->
+                <div style="margin-bottom: 1.5rem;">
+                    <label
+                        style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600; margin-bottom: 0.5rem; display: block;">ADDITIONAL
+                        FILTERS (OPTIONAL)</label>
+                    <div class="search-grid" style="grid-template-columns: 1fr 1fr;">
+                        <input type="text" id="regDateInput"
+                            placeholder="Registration Year / Range (e.g. 2021, 2018-2022)" onkeypress="handleKey(event)"
+                            oninput="triggerLiveSearch()">
+                        <input type="text" id="cnrInput" placeholder="CNR Number" onkeypress="handleKey(event)"
+                            oninput="triggerLiveSearch()">
+                    </div>
+                </div>
+
+                <div style="text-align: right;">
+                    <button onclick="performSearch()" style="width: 200px; height: 50px;">Search Now</button>
+                </div>
+            </div>
+
+            <div id="stats" class="stats" style="display: none;">
+                <span>Found: <strong id="totalCount" style="color: white">0</strong> matches</span>
+                <span>Time: <strong id="searchTime" style="color: white">0</strong> ms</span>
+                <span>Index: <strong style="color: #818cf8">court_records</strong></span>
+            </div>
+
+            <div id="results" class="results-list">
+                <div class="loading">Enter a name to begin searching 7.9M+ records...</div>
+            </div>
+
+            <div id="pagination" style="text-align: center; margin-top: 2rem; display: none;">
+                <button id="loadMoreBtn" onclick="loadMore()"
+                    style="background: rgba(99, 102, 241, 0.1); border: 1px solid var(--primary); color: var(--primary); padding: 0.75rem 3rem;">Load
+                    More Records</button>
+            </div>
+        </div><!-- end panel-search -->
+
+        <!-- ══ TAB 2: BATCH NAME SCREENER ══ -->
+        <div id="panel-screener" class="tab-panel">
+
+            <div class="screener-card">
+                <h3 style="display: flex; align-items: center;">
+                    <svg class="ui-icon" style="width: 1.4rem; height: 1.4rem;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                        <circle cx="17" cy="14" r="2" stroke="var(--primary)" stroke-width="1.5"></circle>
+                    </svg>
+                    Upload Entity Excel File
+                </h3>
+                <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()"
+                    ondragover="event.preventDefault();this.classList.add('dragover')"
+                    ondragleave="this.classList.remove('dragover')" ondrop="handleDrop(event)">
+                    <input type="file" id="fileInput" accept=".xlsx,.xls" onchange="handleFileSelect(this.files[0])">
+                    <div id="dropLabel">
+                        <div style="margin-bottom:.5rem; display: flex; justify-content: center; align-items: center;">
+                            <svg class="ui-icon" style="width: 3rem; height: 3rem; color: var(--primary); opacity: 0.85;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M22 10v6M2 10v6"></path>
+                                <path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"></path>
+                                <polyline points="8 16 12 20 16 16" stroke="currentColor" stroke-width="1.75"></polyline>
+                                <line x1="12" y1="10" x2="12" y2="20" stroke="currentColor" stroke-width="1.75"></line>
+                            </svg>
+                        </div>
+                        <div style="font-size:1rem;font-weight:600">Drop Excel file here or click to browse</div>
+                        <div style="font-size:.85rem;margin-top:.4rem">Supports .xlsx — expects columns: SL No, Name,
+                            PAN No, Address, Region</div>
+                    </div>
+                </div>
+
+                <div class="screener-controls">
+                    <div>
+                        <label>TARGET COURT TABLE</label>
+                        <select id="tableSelect">
+                            <option value="all">All Courts</option>
+                            <option value="district">District Courts</option>
+                            <option value="high">High Courts</option>
+                            <option value="supreme">Supreme Court</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>SIMILARITY THRESHOLD: <span id="thresholdVal">90%</span></label>
+                        <input type="range" id="thresholdSlider" min="70" max="100" value="90"
+                            oninput="document.getElementById('thresholdVal').textContent=this.value+'%'; updateSliderTrack(this);">
+                    </div>
+                    <div>
+                        <label>&nbsp;</label>
+                        <button id="runBtn" onclick="runScreener()" style="padding:.75rem 2rem;height:auto; display:flex; align-items:center; gap:0.5rem; justify-content:center;" disabled>
+                            <svg class="ui-icon" style="margin-right: 0; width: 1rem; height: 1rem;" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M8 5v14l11-7z" fill="currentColor"></path>
+                            </svg>
+                            Run Screener
+                        </button>
+                    </div>
+                </div>
+
+                <div class="progress-bar-wrap" id="progressWrap">
+                    <div class="progress-bar-fill" id="progressFill"></div>
+                </div>
+                <div id="progressLabel" style="font-size:.82rem;color:var(--text-muted);margin-top:.4rem"></div>
+            </div>
+
+            <!-- Results area -->
+            <div id="screenerResults"></div>
+
+        </div><!-- end panel-screener -->
+
+        </div><!-- end .container -->
+    </div><!-- end .main-content -->
+
+    <script>
+        // Left Sidebar Tab switching
+        function switchSidebarTab(tab) {
+            document.getElementById("menu-search").classList.remove("active");
+            document.getElementById("menu-screener").classList.remove("active");
+            
+            if (tab === 'search') {
+                document.getElementById("menu-search").classList.add("active");
+                switchTab('search', document.getElementById('tab-search'));
+            } else if (tab === 'screener') {
+                document.getElementById("menu-screener").classList.add("active");
+                switchTab('screener', document.getElementById('tab-screener'));
+            }
+        }
+
+        // Profile details initialization
+        async function initProfile() {
+            try {
+                const res = await fetch('/api/me');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.success && data.user) {
+                        const u = data.user;
+                        const name = u.full_name || u.email.split('@')[0];
+                        const role = u.role || "individual";
+                        
+                        document.getElementById("profile-name-val").innerText = name;
+                        
+                        let prettyRole = "Individual";
+                        if (role === "super_admin") prettyRole = "Super Admin";
+                        else if (role === "org_admin") prettyRole = "Org Admin";
+                        else if (role === "org_user") prettyRole = "Org User";
+                        
+                        const roleEl = document.getElementById("profile-role-val");
+                        roleEl.innerText = prettyRole;
+                        roleEl.className = `profile-role badge ${role}`;
+                        
+                        const char = name.trim().charAt(0).toUpperCase();
+                        document.getElementById("profile-avatar-char").innerText = char;
+                        return;
+                    }
+                }
+            } catch (e) {
+                console.error("Profile fetch error:", e);
+            }
+
+            // Fallback to token payload
+            const token = sessionStorage.getItem("access_token");
+            if (token) {
+                try {
+                    const payload = JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
+                    const name = payload.name || "User";
+                    const role = payload.role || "individual";
+                    
+                    document.getElementById("profile-name-val").innerText = name;
+                    document.getElementById("profile-role-val").innerText = role === "super_admin" ? "Super Admin" : (role === "org_admin" ? "Org Admin" : (role === "org_user" ? "Org User" : "Individual"));
+                    
+                    const char = name.trim().charAt(0).toUpperCase();
+                    document.getElementById("profile-avatar-char").innerText = char;
+                } catch (e) {
+                    console.error("Failed to parse token details", e);
+                }
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", initProfile);
+
+        // Sidebar logout handler
+        function handleLogout() {
+            sessionStorage.removeItem("access_token");
+            window.location.replace("/login");
+        }
+
+        function updateSliderTrack(slider) {
+            if (!slider) slider = document.getElementById('thresholdSlider');
+            if (!slider) return;
+            const min = parseFloat(slider.min) || 0;
+            const max = parseFloat(slider.max) || 100;
+            const val = parseFloat(slider.value);
+            const percentage = ((val - min) / (max - min)) * 100;
+            slider.style.background = `linear-gradient(to right, var(--primary) 0%, var(--primary) ${percentage}%, rgba(255, 255, 255, 0.1) ${percentage}%, rgba(255, 255, 255, 0.1) 100%)`;
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const slider = document.getElementById('thresholdSlider');
+            if (slider) updateSliderTrack(slider);
+        });
+
+        let suggestTimeout;
+        let searchTimeout;
+        let currentSearchController = null;
+        let currentPage = 1;
+        let isSearching = false;
+
+        // Multi-select state
+        const selectedRecords = new Map();
+
+        function toggleSelection(checkbox, id) {
+            if (checkbox.checked) {
+                const recordData = JSON.parse(decodeURIComponent(checkbox.dataset.record));
+                selectedRecords.set(id, recordData);
+            } else {
+                selectedRecords.delete(id);
+            }
+            updateActionBar();
+        }
+
+        function updateActionBar() {
+            const bar = document.getElementById('actionBar');
+            const count = document.getElementById('selectedCount');
+            if (selectedRecords.size > 0) {
+                count.innerText = `${selectedRecords.size} Record${selectedRecords.size > 1 ? 's' : ''} Selected`;
+                bar.classList.add('visible');
+            } else {
+                bar.classList.remove('visible');
+            }
+        }
+
+        async function generatePDF() {
+            if (selectedRecords.size === 0) return;
+            const records = Array.from(selectedRecords.values());
+
+            // Log report generation to database
+            fetch('/api/stats/log_report', { method: 'POST' }).catch(err => console.error("Failed to log report generation", err));
+
+            // Determine active search name from search input or selected records
+            const searchInput = document.getElementById('nameInput')?.value?.trim();
+            const stateInput = document.getElementById('stateInput')?.value?.trim();
+            const districtInput = document.getElementById('districtInput')?.value?.trim();
+
+            let queryName = searchInput;
+            if (!queryName && records.length > 0 && records[0].party_name) {
+                queryName = records[0].party_name;
+            }
+            if (!queryName) queryName = 'Legal Search';
+
+            let regionStr = [stateInput, districtInput].filter(Boolean).join(', ');
+
+            // Always update screener meta with current search context so stale meta from previous screener runs is overwritten
+            sessionStorage.setItem('brainlynsearch_screener_meta', JSON.stringify({
+                query_name: queryName,
+                pan: '',
+                region: regionStr,
+                match_count: records.length
+            }));
+
+            // Save data to browser memory for the dashboard to read
+            sessionStorage.setItem('brainlynsearch_report_data', JSON.stringify(records));
+
+            // Clear selected records and update UI so action bar disappears
+            selectedRecords.clear();
+            document.querySelectorAll('.record-checkbox').forEach(cb => cb.checked = false);
+            updateActionBar();
+
+            // Redirect based on device environment (same window for mobile/Capacitor, new tab for desktop)
+            const isMobile = window.Capacitor || /Mobi|Android|iPhone/i.test(navigator.userAgent);
+            if (isMobile) {
+                window.location.href = '/dashboard.html';
+            } else {
+                window.open('/dashboard.html', '_blank');
+            }
+        }
+
+        function triggerLiveSearch() {
+            currentPage = 1;
+            // Live search disabled; user must click Search Now to view results
+        }
+
+        async function handleInput(val, field, dropdownId) {
+            // Reset page on new input
+            currentPage = 1;
+
+            // Hide all other dropdowns
+            document.querySelectorAll('.suggestions-dropdown').forEach(d => {
+                if (d.id !== dropdownId) d.style.display = 'none';
+            });
+
+            const dropdown = document.getElementById(dropdownId);
+
+            // Only show suggestions after 3 characters for better performance
+            if (val.length < 3) {
+                dropdown.style.display = 'none';
+                return;
+            }
+
+            // Debounce for the suggestion dropdown (names list)
+            clearTimeout(suggestTimeout);
+            suggestTimeout = setTimeout(async () => {
+                try {
+                    const res = await fetch('/suggest', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ name: val, field: field })
+                    });
+                    const data = await res.json();
+
+                    if (data.success && data.data.length > 0) {
+                        dropdown.innerHTML = data.data.map(item => `
+                            <div class="suggestion-item" onclick="selectSuggestion('${item.replace(/'/g, "\\'")}', '${field}')">${item}</div>
+                        `).join('');
+                        dropdown.style.display = 'block';
+                    } else {
+                        dropdown.style.display = 'none';
+                    }
+                } catch (e) {
+                    console.error("Suggestion error:", e);
+                }
+            }, 300);
+        }
+
+        function selectSuggestion(val, field) {
+            const inputId = field === 'party_name' ? 'nameInput' :
+                field === 'state_name' ? 'stateInput' : 'districtInput';
+            const dropdownId = field === 'party_name' ? 'suggestionsName' :
+                field === 'state_name' ? 'suggestionsState' : 'suggestionsDistrict';
+
+            document.getElementById(inputId).value = val;
+            document.getElementById(dropdownId).style.display = 'none';
+            currentPage = 1;
+        }
+
+        function loadMore() {
+            currentPage++;
+            performSearch(true);
+        }
+
+        // Hide suggestions when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.search-grid')) {
+                document.querySelectorAll('.suggestions-dropdown').forEach(d => d.style.display = 'none');
+            }
+        });
+
+        async function performSearch(append = false) {
+            if (isSearching && !append) return;
+
+            const name = document.getElementById('nameInput').value;
+            const state = document.getElementById('stateInput').value;
+            const district = document.getElementById('districtInput').value;
+            const registration_date = document.getElementById('regDateInput').value;
+            const cnr = document.getElementById('cnrInput').value;
+            const court_type = document.getElementById('courtTypeInput').value;
+
+            const resultsDiv = document.getElementById('results');
+            const statsDiv = document.getElementById('stats');
+            const paginationDiv = document.getElementById('pagination');
+
+            if (name.length < 3 && state.length < 3 && district.length < 3 && cnr.length < 5) {
+                resultsDiv.innerHTML = '<div class="loading">Enter a name or CNR to begin searching 7.9M+ records...</div>';
+                statsDiv.style.display = 'none';
+                paginationDiv.style.display = 'none';
+                return;
+            }
+
+            if (!append) {
+                if (currentSearchController) currentSearchController.abort();
+                currentSearchController = new AbortController();
+                currentPage = 1;
+
+                statsDiv.style.display = 'none';
+                paginationDiv.style.display = 'none';
+
+                // Show premium loading spinner
+                resultsDiv.style.opacity = '1';
+                resultsDiv.innerHTML = `
+                    <div style="text-align: center; padding: 4rem;">
+                        <svg viewBox="0 0 50 50" style="width: 50px; height: 50px; animation: spin 1s linear infinite; stroke: var(--primary);">
+                            <circle cx="25" cy="25" r="20" fill="none" stroke-width="4" style="stroke-linecap: round; stroke-dasharray: 90, 150; stroke-dashoffset: 0; animation: stroke 1.5s ease-in-out infinite;"></circle>
+                        </svg>
+                        <p style="margin-top: 1.5rem; color: var(--text-muted); font-size: 1.1rem; font-weight: 500;">Searching millions of records...</p>
+                    </div>
+                `;
+            }
+
+            isSearching = true;
+
+            try {
+                const response = await fetch('/search', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name, state, district,
+                        registration_date, cnr, court_type,
+                        page: currentPage,
+                        petitioner: document.getElementById('petitionerToggle').checked,
+                        respondent: document.getElementById('respondentToggle').checked
+                    }),
+                    signal: currentSearchController ? currentSearchController.signal : null
+                });
+
+                const result = await response.json();
+                isSearching = false;
+
+                if (result.success) {
+                    statsDiv.style.display = 'flex';
+                    const displayCourt = court_type === 'all' ? 'All Courts' :
+                        court_type === 'district' ? 'District Courts' :
+                            court_type === 'high' ? 'High Courts' : 'Supreme Court';
+                    document.getElementById('totalCount').innerText = result.total.toLocaleString();
+                    document.getElementById('searchTime').innerText = result.search_time_ms;
+                    document.getElementById('stats').querySelector('strong[style*="color: #818cf8"]').innerText = displayCourt;
+
+                    const newCards = result.data.map((item, index) => {
+                        const confidenceColor = item.confidence > 80 ? '#4ade80' : item.confidence > 50 ? '#facc15' : '#fb923c';
+                        const courtType = item.source_index === 'supreme_court_records' ? 'Supreme Court' :
+                            item.source_index === 'high_court_records' ? 'High Court' : 'District Court';
+                        const courtColor = item.source_index === 'supreme_court_records' ? '#f59e0b' :
+                            item.source_index === 'high_court_records' ? '#8b5cf6' : '#10b981';
+
+                        const id = item.cnr || item.diary_number || `tmp_${index}`;
+                        const isChecked = selectedRecords.has(id) ? 'checked' : '';
+                        const itemJson = encodeURIComponent(JSON.stringify(item));
+
+                        return `
+                        <div class="card" style="animation-delay: ${index * 0.05}s">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                <div style="display: flex; gap: 15px; align-items: center;">
+                                    <input type="checkbox" class="record-checkbox" ${isChecked} data-record="${itemJson}" onchange="toggleSelection(this, '${id}')" title="Select Record">
+                                    <h3 style="margin: 0; color: white; font-size: 1.1rem;">${item.party_name || 'N/A'}</h3>
+                                </div>
+                                <span class="cnr-badge">${item.cnr || item.diary_number || 'No ID'}</span>
+                            </div>
+                            <div style="display: flex; gap: 10px; margin-top: 5px;">
+                                <span style="font-size: 0.7rem; color: #94a3b8; font-weight: 500;">Search Confidence: <span style="color: ${confidenceColor}">${item.confidence}%</span></span>
+                                <span style="font-size: 0.7rem; background: ${courtColor}20; color: ${courtColor}; padding: 2px 8px; border-radius: 4px; font-weight: 600;">${courtType}</span>
+                            </div>
+                            <div class="card-grid" style="margin-top: 15px;">
+                                <div><span class="label">Case No:</span> ${item.case_number || 'N/A'}</div>
+                                <div><span class="label">Date:</span> ${item.registration_date || item.date_of_registration || 'N/A'}</div>
+                                <div><span class="label">State:</span> ${item.state_name || 'N/A'}</div>
+                                <div><span class="label">District:</span> ${item.district_name || 'N/A'}</div>
+                                <div style="grid-column: span 2;"><span class="label">Establishment:</span> ${item.establishment_name || 'N/A'}</div>
+                                <div><span class="label">Case Type:</span> ${(() => {
+                                    const ct = (item.case_type || '').toUpperCase();
+                                    if (!ct) return '<span style="color: var(--text-muted)">N/A</span>';
+                                    const ctColor = ct === 'CIVIL' ? '#3b82f6' : ct === 'CRIMINAL' ? '#ef4444' : '#a78bfa';
+                                    return `<span style="font-size:0.72rem;background:${ctColor}20;color:${ctColor};padding:2px 8px;border-radius:4px;font-weight:600;">${ct}</span>`;
+                                })()}</div>
+                                <div><span class="label">Status:</span> ${(() => {
+                                    const st = (item.case_status || (item.disposal_is_final ? 'DISPOSED' : 'PENDING')).toUpperCase();
+                                    const stColor = st === 'DISPOSED' ? '#10b981' : st === 'PENDING' ? '#f59e0b' : '#94a3b8';
+                                    return `<span style="font-size:0.72rem;background:${stColor}20;color:${stColor};padding:2px 8px;border-radius:4px;font-weight:600;">${st}</span>`;
+                                })()}</div>
+                            </div>
+                        </div>
+                    `}).join('');
+
+                    if (append) {
+                        resultsDiv.innerHTML += newCards;
+                    } else {
+                        if (result.data.length === 0) {
+                            resultsDiv.innerHTML = '<div class="loading">No records found in database for these matches.</div>';
+                        } else {
+                            resultsDiv.innerHTML = newCards;
+                        }
+                    }
+
+                    paginationDiv.style.display = result.hasMore ? 'block' : 'none';
+                } else {
+                    resultsDiv.innerHTML = `<div class="loading" style="color: #ef4444">${result.detail || 'Search failed.'}</div>`;
+                }
+            } catch (error) {
+                isSearching = false;
+                if (error.name === 'AbortError') return;
+                resultsDiv.style.opacity = '1';
+                resultsDiv.innerHTML = `<div class="loading" style="color: #ef4444">Error connecting to API. Is the backend running?</div>`;
+            }
+        }
+
+        function handleKey(e) {
+            if (e.key === 'Enter') performSearch(false);
+        }
+
+        // ══════════════════════════════════════════════
+        //  BATCH NAME SCREENER  — JavaScript
+        // ══════════════════════════════════════════════
+
+        function switchTab(tab, btn) {
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('panel-' + tab).classList.add('active');
+            btn.classList.add('active');
+        }
+
+
+
+        let selectedFile = null;
+        function handleFileSelect(file) {
+            if (!file) return;
+            selectedFile = file;
+            document.getElementById('dropLabel').innerHTML =
+                `<div style="margin-bottom:.5rem; display: flex; justify-content: center;"><svg class="ui-icon" style="width: 2.5rem; height: 2.5rem; color: var(--green);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg></div><div style="font-weight:600;margin-top:.4rem">${file.name}</div><div style="font-size:.82rem;color:#34d399;margin-top:.2rem">File ready — click Run Screener</div>`;
+            document.getElementById('runBtn').disabled = false;
+        }
+        function handleDrop(e) {
+            e.preventDefault();
+            document.getElementById('dropZone').classList.remove('dragover');
+            const file = e.dataTransfer.files[0];
+            if (file) handleFileSelect(file);
+        }
+
+        let screenerData = [];
+        async function runScreener() {
+            if (!selectedFile) return;
+            const courtType = document.getElementById('tableSelect').value;
+            const threshold = parseFloat(document.getElementById('thresholdSlider').value) / 100;
+            const btn = document.getElementById('runBtn');
+            const wrap = document.getElementById('progressWrap');
+            const fill = document.getElementById('progressFill');
+            const label = document.getElementById('progressLabel');
+            const results = document.getElementById('screenerResults');
+
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner" style="display:inline-block; width:12px; height:12px; border:2px solid #fff; border-radius:50%; border-top-color:transparent; animation:spin 1s linear infinite; margin-right:6px;"></span>Processing...';
+            wrap.style.display = 'block';
+            fill.style.width = '0%';
+            label.textContent = 'Uploading and matching names...';
+            results.innerHTML = '';
+
+            // Animate progress bar while waiting
+            let prog = 0;
+            const anim = setInterval(() => {
+                prog = Math.min(prog + Math.random() * 8, 88);
+                fill.style.width = prog + '%';
+            }, 400);
+
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+            formData.append('court_type', courtType);
+            formData.append('threshold', threshold);
+
+            try {
+                const res = await fetch('/upload-screener', { method: 'POST', body: formData });
+                const data = await res.json();
+                clearInterval(anim);
+                fill.style.width = '100%';
+
+                if (!data.success) throw new Error(data.detail || 'Screener failed');
+
+                screenerData = data.results;
+                label.textContent = `Done — ${data.total_entities} names checked, ${data.total_matched} matched above ${data.threshold_pct}% threshold`;
+                renderScreenerResults(data);
+            } catch (e) {
+                clearInterval(anim);
+                fill.style.width = '0%';
+                label.textContent = 'Error: ' + e.message;
+                results.innerHTML = `<div class="loading" style="color:#ef4444; display:flex; align-items:center; justify-content:center; gap:0.5rem;"><svg class="ui-icon" style="margin-right: 0; color: #ef4444;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>${e.message}</div>`;
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<svg class="ui-icon" style="margin-right: 0; width: 1rem; height: 1rem;" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" fill="currentColor"></path></svg> Run Screener';
+            }
+        }
+
+        function renderScreenerResults(data) {
+            const el = document.getElementById('screenerResults');
+
+            // ── Column detection info banner ──
+            const dc = data.detected_columns || {};
+            const colBadges = Object.entries(dc)
+                .filter(([k, v]) => v)
+                .map(([k, v]) => `<span style="background:rgba(99,102,241,.15);border:1px solid rgba(99,102,241,.3);border-radius:6px;padding:.2rem .6rem;font-size:.78rem"><b>${k}:</b> "${v}"</span>`)
+                .join(' ');
+
+            let html = `
+            <div style="background: rgba(5, 150, 105, 0.15); backdrop-filter: blur(8px); border: 1px solid rgba(5, 150, 105, 0.4); border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1.5rem; font-size: .88rem; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
+                <div style="color:#34d399;font-weight:600;margin-bottom:.4rem; display:flex; align-items:center; gap:0.4rem;">
+                    <svg class="ui-icon" style="margin-right: 0; color: #34d399;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                    Excel Parsed Successfully — ${data.file_name || 'file'}
+                </div>
+                <div style="color:var(--text-muted)">Auto-detected columns: ${colBadges || '<i>none detected</i>'}</div>
+                <div style="color:var(--text-muted);margin-top:.3rem">
+                    <b style="color:var(--text)">${data.total_entities}</b> names extracted &nbsp;·&nbsp;
+                    Searched using <b style="color:var(--primary)">Name column only</b> &nbsp;·&nbsp;
+                    Court: <b style="color:var(--text)">${data.court_type.toUpperCase()}</b>
+                </div>
+            </div>`;
+
+            // ── Summary chips ──
+            html += `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+                <div class="screener-summary" style="margin-bottom: 0;">
+                    <div class="summ-chip">Total Names: <span>${data.total_entities}</span></div>
+                    <div class="summ-chip">Matched: <span>${data.total_matched}</span></div>
+                    <div class="summ-chip">No Match: <span>${data.total_entities - data.total_matched}</span></div>
+                    <div class="summ-chip">Threshold: <span>${data.threshold_pct}%</span></div>
+                    <div class="summ-chip">Court: <span>${data.court_type.toUpperCase()}</span></div>
+                </div>
+                <button class="dl-btn excel" onclick="downloadCompleteExcel()" style="display:flex; align-items:center; gap:0.4rem;">
+                    <svg class="ui-icon" style="margin-right: 0; width: 0.95rem; height: 0.95rem; color: #34d399;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    Complete Summary (Excel)
+                </button>
+            </div>`;
+
+            data.results.forEach((r, idx) => {
+                const hasMatch = r.match_count > 0;
+                const badgeCls = hasMatch ? '' : 'none';
+                const badgeTxt = hasMatch ? `${r.match_count} match${r.match_count > 1 ? 'es' : ''}` : 'No match';
+
+                let rows = '';
+                r.matches.forEach(m => {
+                    const simCls = m.similarity >= 95 ? 'sim-high' : 'sim-mid';
+                    const cType = m.source_index === 'supreme_court_records' ? 'Supreme Court' :
+                        m.source_index === 'high_court_records' ? 'High Court' : 'District Court';
+
+                    rows += `<tr>
+                        <td>${m.party_name}</td>
+                        <td>${m.cnr || '—'}</td>
+                        <td><span class="sim-badge ${simCls}">${m.similarity}%</span></td>
+                        <td>${m.registration_date || '—'}</td>
+                        <td>${m.state_name || '—'}</td>
+                        <td>${cType}</td>
+                    </tr>`;
+                });
+
+                const tableHtml = hasMatch ? `
+                    <div class="table-responsive">
+                        <table class="match-table">
+                            <thead><tr><th>Party Name</th><th>CNR</th><th>Similarity</th><th>Date</th><th>State</th><th>Court</th></tr></thead>
+                            <tbody>${rows}</tbody>
+                        </table>
+                    </div>` : `<div style="color:var(--text-muted);padding:.75rem 0">No records found above threshold.</div>`;
+
+                html += `<div class="result-card">
+                    <div class="result-card-header" onclick="toggleCard(${idx})">
+                        <div style="display:flex;align-items:center;gap:.75rem">
+                            <span style="color:var(--text-muted);font-size:.85rem">${r.sl_no || idx + 1}</span>
+                            <span class="result-name">${r.query_name}</span>
+                            ${r.pan ? `<span style="font-size:.78rem;color:var(--text-muted)">${r.pan}</span>` : ''}
+                        </div>
+                        <div style="display:flex;align-items:center;gap:.75rem">
+                            <span class="match-badge ${badgeCls}">${badgeTxt}</span>
+                            <span style="color:var(--text-muted);display:flex;align-items:center;" id="chevron-${idx}">
+                                <svg class="ui-icon chevron-icon" style="width: 1rem; height: 1rem; margin-right: 0;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="result-card-body" id="body-${idx}">
+                        <div style="font-size:.82rem;color:var(--text-muted);margin-bottom:.5rem">
+                            ${r.pan ? `<b>PAN:</b> ${r.pan} &nbsp;|&nbsp;` : ''}
+                            ${r.region ? `<b>Region:</b> ${r.region} &nbsp;|&nbsp;` : ''}
+                            ${r.address ? `<b>Address:</b> ${r.address}` : ''}
+                        </div>
+                        ${tableHtml}
+                        <div class="dl-btns">
+                            <button class="dl-btn excel" onclick="downloadExcel(${idx})" style="display:flex; align-items:center; gap:0.4rem;">
+                                <svg class="ui-icon" style="margin-right: 0; width: 0.95rem; height: 0.95rem; color: #34d399;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                    <polyline points="7 10 12 15 17 10"></polyline>
+                                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                                </svg>
+                                Excel Report
+                            </button>
+                            <button class="dl-btn pdf" onclick="downloadPdfReport(${idx})" style="display:flex; align-items:center; gap:0.4rem;">
+                                <svg class="ui-icon" style="margin-right: 0; width: 0.95rem; height: 0.95rem; color: #a78bfa;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                    <polyline points="7 10 12 15 17 10"></polyline>
+                                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                                </svg>
+                                PDF Report
+                            </button>
+                        </div>
+                    </div>
+                </div>`;
+            });
+            el.innerHTML = html;
+        }
+
+        function toggleCard(idx) {
+            const body = document.getElementById('body-' + idx);
+            const chev = document.getElementById('chevron-' + idx).querySelector('.chevron-icon');
+            body.classList.toggle('open');
+            if (body.classList.contains('open')) {
+                chev.style.transform = 'rotate(180deg)';
+            } else {
+                chev.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        async function downloadExcel(idx) {
+            const r = screenerData[idx];
+            const payload = { query_name: r.query_name, pan: r.pan || '', address: r.address || '', region: r.region || '', matches: r.matches };
+            const res = await fetch('/download-screener-report', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            if (!res.ok) { alert('Excel generation failed'); return; }
+            const blob = await res.blob();
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = res.headers.get('Content-Disposition')?.match(/filename="(.+)"/)?.[1]
+                || `${r.query_name.replace(/\s+/g, '_')}_Report.xlsx`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        async function downloadCompleteExcel() {
+            if (!screenerData || screenerData.length === 0) return;
+            const payload = { results: screenerData };
+            const res = await fetch('/download-complete-screener-report', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            if (!res.ok) { alert('Complete Excel generation failed'); return; }
+            const blob = await res.blob();
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = res.headers.get('Content-Disposition')?.match(/filename="(.+)"/)?.[1]
+                || `Complete_Batch_Screener_Report.xlsx`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function downloadPdfReport(idx) {
+            const r = screenerData[idx];
+            // Pass the matches so the dashboard can generate the charts and table
+            sessionStorage.setItem('brainlynsearch_report_data', JSON.stringify(r.matches));
+
+            // Pass the screener specific metadata so the dashboard can display the banner
+            sessionStorage.setItem('brainlynsearch_screener_meta', JSON.stringify({
+                query_name: r.query_name,
+                pan: r.pan,
+                region: r.region,
+                match_count: r.match_count
+            }));
+
+            // Redirect based on device environment (same window for mobile/Capacitor, new tab for desktop)
+            const isMobile = window.Capacitor || /Mobi|Android|iPhone/i.test(navigator.userAgent);
+            if (isMobile) {
+                window.location.href = 'dashboard.html';
+            } else {
+                window.open('dashboard.html', '_blank');
+            }
+        }
+
+    </script>
+</body>
+
+</html>

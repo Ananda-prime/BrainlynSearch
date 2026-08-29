@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxGraphModel dx="1600" dy="1400" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="2600" math="0" shadow="0">
+  <root>
+    <mxCell id="0" />
+    <mxCell id="1" parent="0" />
+    <mxCell id="S1" value="&lt;b&gt;STEP 1: USER SEARCH &amp;amp; INSTANT ELASTICSEARCH DISPLAY&lt;/b&gt;" style="swimlane;startSize=35;fillColor=#0b0f19;strokeColor=#6366f1;fontColor=#ffffff;fontStyle=1;fontSize=14;rounded=1;arcSize=3;" vertex="1" parent="1">
+      <mxGeometry x="40" y="40" width="1500" height="220" as="geometry" />
+    </mxCell>
+    <mxCell id="S1_UI" value="&lt;b&gt;Search Query Input&lt;/b&gt;&lt;br/&gt;'NICE INTERNATIONAL LIMITED'&lt;br/&gt;Filters: All Courts / Delhi / New Delhi" style="rounded=1;fillColor=#141c2e;strokeColor=#6366f1;strokeWidth=1.5;fontColor=#f8fafc;fontSize=13;" vertex="1" parent="S1">
+      <mxGeometry x="70" y="95" width="420" height="110" as="geometry" />
+    </mxCell>
+    <mxCell id="S1_ES" value="&lt;b&gt;Elasticsearch 8 Index&lt;/b&gt;&lt;br/&gt;Fast sub-second retrieval&lt;br/&gt;Returns 97 matching record cards" style="shape=cylinder3;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#141c2e;strokeColor=#34d399;strokeWidth=1.5;fontColor=#f8fafc;fontSize=13;" vertex="1" parent="S1">
+      <mxGeometry x="520" y="95" width="430" height="110" as="geometry" />
+    </mxCell>
+    <mxCell id="S1_CARD" value="&lt;b&gt;Record Card (DLND020015032021)&lt;/b&gt;&lt;br/&gt;THE DELHI SAFE DEPOSIT Vs NICE INT.&lt;br/&gt;&lt;b&gt;👉 Action: User Clicks 'Generate Complete AI Report'&lt;/b&gt;" style="rounded=1;fillColor=#141c2e;strokeColor=#38bdf8;strokeWidth=2;fontColor=#f8fafc;fontSize=13;" vertex="1" parent="S1">
+      <mxGeometry x="980" y="95" width="530" height="110" as="geometry" />
+    </mxCell>
+    <mxCell id="S2" value="&lt;b&gt;STEP 2: MCP CORE SERVER PROTOCOL &amp;amp; GATEWAY&lt;/b&gt;" style="swimlane;startSize=35;fillColor=#0b0f19;strokeColor=#38bdf8;fontColor=#ffffff;fontStyle=1;fontSize=14;rounded=1;arcSize=3;" vertex="1" parent="1">
+      <mxGeometry x="40" y="290" width="1500" height="140" as="geometry" />
+    </mxCell>
+    <mxCell id="S2_MCP" value="&lt;b&gt;🔌 MCP Server Gateway (JSON-RPC 2.0)&lt;/b&gt;&lt;br/&gt;Receives Payload: CNR DLND020015032021, Party Name, Case No 833/2021 ➔ Dispatches to Multi-Agent Team" style="rounded=1;fillColor=#141c2e;strokeColor=#38bdf8;strokeWidth=1.5;fontColor=#f8fafc;fontSize=13;" vertex="1" parent="S2">
+      <mxGeometry x="70" y="340" width="1440" height="75" as="geometry" />
+    </mxCell>
+    <mxCell id="S3" value="&lt;b&gt;STEP 3: PARALLEL MULTI-AGENT TEAM EXECUTION (MCP TOOL CALLS)&lt;/b&gt;" style="swimlane;startSize=35;fillColor=#0b0f19;strokeColor=#c084fc;fontColor=#ffffff;fontStyle=1;fontSize=14;rounded=1;arcSize=3;" vertex="1" parent="1">
+      <mxGeometry x="40" y="460" width="1500" height="520" as="geometry" />
+    </mxCell>
+    <mxCell id="AG_SCRAP" value="&lt;b&gt;🕷️ Agent A: eCourts Scraper Agent&lt;/b&gt;&lt;br/&gt;MCP Tool: ecourts_fetch_live_case()&lt;br/&gt;Executes Phase 1-4 Scraping Flow&lt;br/&gt;Extracts Case Status, Next Date &amp;amp; Timeline" style="rounded=1;fillColor=#141c2e;strokeColor=#c084fc;strokeWidth=1.5;fontColor=#f8fafc;fontSize=12;" vertex="1" parent="S3">
+      <mxGeometry x="70" y="515" width="340" height="200" as="geometry" />
+    </mxCell>
+    <mxCell id="AG_PDF" value="&lt;b&gt;📄 Agent B: PDF Judgment Parser Agent&lt;/b&gt;&lt;br/&gt;MCP Tool: download_and_ocr_pdf()&lt;br/&gt;Downloads Signed Order PDFs&lt;br/&gt;Vision OCR extracts rulings &amp;amp; Coram notes" style="rounded=1;fillColor=#141c2e;strokeColor=#f43f5e;strokeWidth=1.5;fontColor=#f8fafc;fontSize=12;" vertex="1" parent="S3">
+      <mxGeometry x="430" y="515" width="340" height="200" as="geometry" />
+    </mxCell>
+    <mxCell id="AG_MCA" value="&lt;b&gt;🏢 Agent C: MCA Corporate Agent&lt;/b&gt;&lt;br/&gt;MCP Tool: mca_director_lookup()&lt;br/&gt;Queries MCA registry for CIN &amp;amp; Directors&lt;br/&gt;Cross-links corporate management with case" style="rounded=1;fillColor=#141c2e;strokeColor=#fbbf24;strokeWidth=1.5;fontColor=#f8fafc;fontSize=12;" vertex="1" parent="S3">
+      <mxGeometry x="790" y="515" width="340" height="200" as="geometry" />
+    </mxCell>
+    <mxCell id="AG_RISK" value="&lt;b&gt;⚖️ Agent D: Legal Risk &amp;amp; Timeline Agent&lt;/b&gt;&lt;br/&gt;MCP Tool: calculate_risk_score()&lt;br/&gt;Computes Risk Score (85/100 HIGH RISK)&lt;br/&gt;Synthesizes proceedings timeline &amp;amp; summary" style="rounded=1;fillColor=#141c2e;strokeColor=#10b981;strokeWidth=1.5;fontColor=#f8fafc;fontSize=12;" vertex="1" parent="S3">
+      <mxGeometry x="1150" y="515" width="360" height="200" as="geometry" />
+    </mxCell>
+    <mxCell id="S4" value="&lt;b&gt;STEP 4: COMPLETE DEEP AI REPORT STREAMED TO CUSTOMER UI&lt;/b&gt;" style="swimlane;startSize=35;fillColor=#042f2e;strokeColor=#10b981;fontColor=#ffffff;fontStyle=1;fontSize=14;rounded=1;arcSize=3;" vertex="1" parent="1">
+      <mxGeometry x="40" y="1010" width="1500" height="480" as="geometry" />
+    </mxCell>
+    <mxCell id="REP1" value="&lt;b&gt;📌 Executive Brief &amp;amp; Status&lt;/b&gt;&lt;br/&gt;CNR DLND020015032021&lt;br/&gt;Status: PENDING&lt;br/&gt;Risk Score: 85/100 (HIGH RISK)" style="rounded=1;fillColor=#141c2e;strokeColor=#38bdf8;strokeWidth=1.5;fontColor=#f8fafc;fontSize=12;" vertex="1" parent="S4">
+      <mxGeometry x="70" y="1065" width="330" height="200" as="geometry" />
+    </mxCell>
+    <mxCell id="REP2" value="&lt;b&gt;📅 Hearing &amp;amp; Proceedings Timeline&lt;/b&gt;&lt;br/&gt;Next Hearing Date: 18-09-2026&lt;br/&gt;Full Chronological Proceedings List&lt;br/&gt;Court Room No &amp;amp; Bench Details" style="rounded=1;fillColor=#141c2e;strokeColor=#34d399;strokeWidth=1.5;fontColor=#f8fafc;fontSize=12;" vertex="1" parent="S4">
+      <mxGeometry x="430" y="1065" width="330" height="200" as="geometry" />
+    </mxCell>
+    <mxCell id="REP3" value="&lt;b&gt;🏢 Corporate MCA Cross-Ref&lt;/b&gt;&lt;br/&gt;Company: NICE INT. LTD&lt;br/&gt;CIN: U74899DL1995PLC068123&lt;br/&gt;Active Directors &amp;amp; Registered Address" style="rounded=1;fillColor=#141c2e;strokeColor=#fbbf24;strokeWidth=1.5;fontColor=#f8fafc;fontSize=12;" vertex="1" parent="S4">
+      <mxGeometry x="790" y="1065" width="330" height="200" as="geometry" />
+    </mxCell>
+    <mxCell id="REP4" value="&lt;b&gt;📄 Signed Orders &amp;amp; Judgments PDFs&lt;/b&gt;&lt;br/&gt;Order_23_01_2021.pdf (Downloadable)&lt;br/&gt;Order_12_05_2024.pdf (Downloadable)&lt;br/&gt;AI Ruling Extraction &amp;amp; Judge Remarks" style="rounded=1;fillColor=#141c2e;strokeColor=#f43f5e;strokeWidth=1.5;fontColor=#f8fafc;fontSize=12;" vertex="1" parent="S4">
+      <mxGeometry x="1150" y="1065" width="360" height="200" as="geometry" />
+    </mxCell>
+    <mxCell id="E1" value="Search Query" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#6366f1;fontSize=11;fontColor=#cdd6f4;strokeColor=#6366f1;" edge="1" parent="1" source="S1_UI" target="S1_ES">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="E2" value="Fast Results" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#6366f1;fontSize=11;fontColor=#cdd6f4;strokeColor=#34d399;" edge="1" parent="1" source="S1_ES" target="S1_CARD">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="E3" value="Click 'Generate Complete AI Report'" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#6366f1;fontSize=11;fontColor=#cdd6f4;strokeColor=#38bdf8;strokeWidth=3;" edge="1" parent="1" source="S1_CARD" target="S2_MCP">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="E4" value="Trigger Tool" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#6366f1;fontSize=11;fontColor=#cdd6f4;strokeColor=#c084fc;" edge="1" parent="1" source="S2_MCP" target="AG_SCRAP">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="E5" value="Trigger Tool" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#6366f1;fontSize=11;fontColor=#cdd6f4;strokeColor=#f43f5e;" edge="1" parent="1" source="S2_MCP" target="AG_PDF">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="E6" value="Trigger Tool" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#6366f1;fontSize=11;fontColor=#cdd6f4;strokeColor=#fbbf24;" edge="1" parent="1" source="S2_MCP" target="AG_MCA">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="E7" value="Trigger Tool" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#6366f1;fontSize=11;fontColor=#cdd6f4;strokeColor=#10b981;" edge="1" parent="1" source="S2_MCP" target="AG_RISK">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="E8" value="Stream Complete Deep Report" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#6366f1;fontSize=11;fontColor=#cdd6f4;strokeColor=#10b981;strokeWidth=3;" edge="1" parent="1" source="AG_RISK" target="S4">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+  </root>
+</mxGraphModel>

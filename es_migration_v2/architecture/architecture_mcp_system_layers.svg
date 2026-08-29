@@ -1,0 +1,166 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1800" width="100%" height="100%" style="background-color: #0f172a; font-family: 'Inter', system-ui, -apple-system, sans-serif;">
+  <defs>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#38bdf8"/>
+    </marker>
+    <marker id="arrow-purple" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#c084fc"/>
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#34d399"/>
+    </marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#fbbf24"/>
+    </marker>
+  </defs>
+
+  <!-- Title Header -->
+  <rect x="40" y="30" width="1520" height="75" rx="16" fill="#1e293b" stroke="#334155" stroke-width="2"/>
+  <text x="70" y="72" fill="#f8fafc" font-size="22" font-weight="700">DIAGRAM 1: OVERALL MCP + MULTI-AGENT SYSTEM ARCHITECTURE LAYERS</text>
+  <rect x="1240" y="52" width="290" height="32" rx="16" fill="#38bdf8" fill-opacity="0.15" stroke="#38bdf8" stroke-width="1"/>
+  <text x="1385" y="73" fill="#38bdf8" font-size="12" font-weight="700" text-anchor="middle">ENTERPRISE SYSTEM LAYERS</text>
+
+  <!-- LAYER 1 -->
+  <g id="layer-1">
+    <rect x="40" y="135" width="1520" height="190" rx="16" fill="#1e293b" fill-opacity="0.6" stroke="#334155" stroke-width="2"/>
+    <rect x="60" y="150" width="330" height="28" rx="6" fill="#38bdf8" fill-opacity="0.2"/>
+    <text x="70" y="169" fill="#38bdf8" font-size="12" font-weight="700" letter-spacing="1">LAYER 1: CLIENT &amp; MCP HOST INTERFACE</text>
+
+    <rect x="70" y="195" width="680" height="105" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+    <text x="95" y="235" fill="#38bdf8" font-size="20">💻</text>
+    <text x="135" y="232" fill="#f8fafc" font-size="16" font-weight="700">User Web Dashboard / API Gateway</text>
+    <text x="135" y="258" fill="#94a3b8" font-size="13">React UI / FastAPI Server / REST &amp; WebSockets Real-time Interface</text>
+
+    <rect x="790" y="195" width="740" height="105" rx="12" fill="#0f172a" stroke="#c084fc" stroke-width="1.5"/>
+    <text x="815" y="235" fill="#c084fc" font-size="20">🤖</text>
+    <text x="855" y="232" fill="#f8fafc" font-size="16" font-weight="700">MCP Host Protocol Interface</text>
+    <text x="855" y="258" fill="#94a3b8" font-size="13">Claude Desktop / Cursor IDE / Standard JSON-RPC 2.0 Host Connection</text>
+  </g>
+
+  <path d="M 410 325 L 410 380" stroke="#38bdf8" stroke-width="2.5" marker-end="url(#arrow-blue)"/>
+  <path d="M 1160 325 L 1160 380" stroke="#c084fc" stroke-width="2.5" marker-end="url(#arrow-purple)"/>
+
+  <!-- LAYER 2 -->
+  <g id="layer-2">
+    <rect x="40" y="390" width="1520" height="240" rx="16" fill="#1e293b" fill-opacity="0.6" stroke="#334155" stroke-width="2"/>
+    <rect x="60" y="405" width="440" height="28" rx="6" fill="#818cf8" fill-opacity="0.2"/>
+    <text x="70" y="424" fill="#818cf8" font-size="12" font-weight="700" letter-spacing="1">LAYER 2: CENTRAL AI ORCHESTRATOR &amp; MCP CORE SERVER</text>
+
+    <rect x="70" y="450" width="440" height="155" rx="12" fill="#0f172a" stroke="#818cf8" stroke-width="1.5"/>
+    <text x="95" y="482" fill="#f8fafc" font-size="15" font-weight="700">Central Master Router &amp; Planner</text>
+    <text x="95" y="508" fill="#94a3b8" font-size="12">• Intent Classification &amp; Task Breakdown</text>
+    <text x="95" y="530" fill="#94a3b8" font-size="12">• Multi-Agent Dependency Execution Graph</text>
+    <text x="95" y="552" fill="#94a3b8" font-size="12">• Real-time Context &amp; Session Memory</text>
+
+    <rect x="540" y="450" width="510" height="155" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+    <text x="565" y="482" fill="#f8fafc" font-size="15" font-weight="700">MCP Protocol Hub (Tools &amp; Resources)</text>
+    <text x="565" y="508" fill="#38bdf8" font-size="12" font-family="monospace">Tool Registry: scrape_site(), solve_captcha()</text>
+    <text x="565" y="530" fill="#38bdf8" font-size="12" font-family="monospace">Resource URIs: legal://schema, mca://template</text>
+    <text x="565" y="552" fill="#38bdf8" font-size="12" font-family="monospace">Prompt Manager: System Prompts &amp; Format Guards</text>
+
+    <rect x="1080" y="450" width="450" height="155" rx="12" fill="#0f172a" stroke="#34d399" stroke-width="1.5"/>
+    <text x="1105" y="482" fill="#f8fafc" font-size="15" font-weight="700">Multi-Agent Data Synthesizer</text>
+    <text x="1105" y="508" fill="#94a3b8" font-size="12">• Cross-Source Entity Deduplication</text>
+    <text x="1105" y="530" fill="#94a3b8" font-size="12">• Structured JSON Payload Merger</text>
+    <text x="1105" y="552" fill="#94a3b8" font-size="12">• Complete Report UI Formatter</text>
+  </g>
+
+  <path d="M 800 630 L 800 680" stroke="#c084fc" stroke-width="3" stroke-dasharray="6,4" marker-end="url(#arrow-purple)"/>
+
+  <!-- LAYER 3 -->
+  <g id="layer-3">
+    <rect x="40" y="690" width="1520" height="270" rx="16" fill="#1e293b" fill-opacity="0.6" stroke="#334155" stroke-width="2"/>
+    <rect x="60" y="705" width="460" height="28" rx="6" fill="#c084fc" fill-opacity="0.2"/>
+    <text x="70" y="724" fill="#c084fc" font-size="12" font-weight="700" letter-spacing="1">LAYER 3: SPECIALIZED AUTONOMOUS EXTRACTION AGENTS</text>
+
+    <rect x="70" y="750" width="345" height="185" rx="12" fill="#0f172a" stroke="#c084fc" stroke-width="1.5"/>
+    <text x="90" y="782" fill="#f8fafc" font-size="15" font-weight="700">⚖️ Legal &amp; Court Agent</text>
+    <text x="90" y="808" fill="#c084fc" font-size="12" font-weight="600">Target: eCourts, High Courts</text>
+    <text x="90" y="834" fill="#94a3b8" font-size="12">• Search Cause Lists</text>
+    <text x="90" y="856" fill="#94a3b8" font-size="12">• Extract Case Orders &amp; PDFs</text>
+    <text x="90" y="878" fill="#94a3b8" font-size="12">• Parse Litigant Details</text>
+
+    <rect x="445" y="750" width="345" height="185" rx="12" fill="#0f172a" stroke="#c084fc" stroke-width="1.5"/>
+    <text x="465" y="782" fill="#f8fafc" font-size="15" font-weight="700">🏢 Corporate &amp; MCA Agent</text>
+    <text x="465" y="808" fill="#c084fc" font-size="12" font-weight="600">Target: MCA21, Zauba Corp</text>
+    <text x="465" y="834" fill="#94a3b8" font-size="12">• Company Filings &amp; DIN</text>
+    <text x="465" y="856" fill="#94a3b8" font-size="12">• Extract Director History</text>
+    <text x="465" y="878" fill="#94a3b8" font-size="12">• Financial Summary Index</text>
+
+    <rect x="820" y="750" width="345" height="185" rx="12" fill="#0f172a" stroke="#c084fc" stroke-width="1.5"/>
+    <text x="840" y="782" fill="#f8fafc" font-size="15" font-weight="700">🗳️ Voter &amp; Public Agent</text>
+    <text x="840" y="808" fill="#c084fc" font-size="12" font-weight="600">Target: Electoral &amp; Land</text>
+    <text x="840" y="834" fill="#94a3b8" font-size="12">• Electoral Rolls Search</text>
+    <text x="840" y="856" fill="#94a3b8" font-size="12">• Address Match Engine</text>
+    <text x="840" y="878" fill="#94a3b8" font-size="12">• Identity Verification</text>
+
+    <rect x="1195" y="750" width="335" height="185" rx="12" fill="#0f172a" stroke="#c084fc" stroke-width="1.5"/>
+    <text x="1215" y="782" fill="#f8fafc" font-size="15" font-weight="700">🌐 Web &amp; News Agent</text>
+    <text x="1215" y="808" fill="#c084fc" font-size="12" font-weight="600">Target: SERP, Google News</text>
+    <text x="1215" y="834" fill="#94a3b8" font-size="12">• Dynamic Web Crawl</text>
+    <text x="1215" y="856" fill="#94a3b8" font-size="12">• Adverse News Extraction</text>
+    <text x="1215" y="878" fill="#94a3b8" font-size="12">• Custom Web Footprint</text>
+  </g>
+
+  <path d="M 240 935 L 240 990" stroke="#fbbf24" stroke-width="2" marker-end="url(#arrow-amber)"/>
+  <path d="M 610 935 L 610 990" stroke="#fbbf24" stroke-width="2" marker-end="url(#arrow-amber)"/>
+  <path d="M 990 935 L 990 990" stroke="#fbbf24" stroke-width="2" marker-end="url(#arrow-amber)"/>
+  <path d="M 1360 935 L 1360 990" stroke="#fbbf24" stroke-width="2" marker-end="url(#arrow-amber)"/>
+
+  <!-- LAYER 4 -->
+  <g id="layer-4">
+    <rect x="40" y="990" width="1520" height="250" rx="16" fill="#1e293b" fill-opacity="0.6" stroke="#334155" stroke-width="2"/>
+    <rect x="60" y="1005" width="460" height="28" rx="6" fill="#fbbf24" fill-opacity="0.2"/>
+    <text x="70" y="1024" fill="#fbbf24" font-size="12" font-weight="700" letter-spacing="1">LAYER 4: WEBSITE CONNECTOR &amp; ANTI-BOT INFRASTRUCTURE</text>
+
+    <rect x="70" y="1050" width="345" height="165" rx="12" fill="#0f172a" stroke="#fbbf24" stroke-width="1.5"/>
+    <text x="95" y="1085" fill="#f8fafc" font-size="15" font-weight="700">Headless Browser Engine</text>
+    <text x="95" y="1112" fill="#94a3b8" font-size="12">Playwright / Undetected Chrome</text>
+    <text x="95" y="1134" fill="#94a3b8" font-size="12">Automates JS &amp; Dynamic DOM</text>
+
+    <rect x="445" y="1050" width="345" height="165" rx="12" fill="#0f172a" stroke="#fbbf24" stroke-width="1.5"/>
+    <text x="470" y="1085" fill="#f8fafc" font-size="15" font-weight="700">AI CAPTCHA &amp; Anti-Bot Solver</text>
+    <text x="470" y="1112" fill="#94a3b8" font-size="12">Vision OCR LLM + 2Captcha API</text>
+    <text x="470" y="1134" fill="#94a3b8" font-size="12">Bypasses Captchas &amp; Cloudflare</text>
+
+    <rect x="820" y="1050" width="345" height="165" rx="12" fill="#0f172a" stroke="#fbbf24" stroke-width="1.5"/>
+    <text x="845" y="1085" fill="#f8fafc" font-size="15" font-weight="700">Proxy Router &amp; DOM Parser</text>
+    <text x="845" y="1112" fill="#94a3b8" font-size="12">Rotating Residential IP Pool</text>
+    <text x="845" y="1134" fill="#94a3b8" font-size="12">BeautifulSoup &amp; Tesseract PDF OCR</text>
+
+    <rect x="1195" y="1050" width="335" height="165" rx="12" fill="#450a0a" stroke="#f43f5e" stroke-width="2"/>
+    <text x="1215" y="1085" fill="#fca5a5" font-size="15" font-weight="700">🔴 TARGET WEBSITES</text>
+    <text x="1215" y="1112" fill="#f8fafc" font-size="12">• eCourts / High Court Portals</text>
+    <text x="1215" y="1134" fill="#f8fafc" font-size="12">• MCA21 Ministry of Corp Affairs</text>
+    <text x="1215" y="1156" fill="#f8fafc" font-size="12">• State Electoral &amp; Land Sites</text>
+  </g>
+
+  <path d="M 800 1240 L 800 1290" stroke="#34d399" stroke-width="3" marker-end="url(#arrow-green)"/>
+
+  <!-- LAYER 5 -->
+  <g id="layer-5">
+    <rect x="40" y="1290" width="1520" height="250" rx="16" fill="#1e293b" fill-opacity="0.6" stroke="#334155" stroke-width="2"/>
+    <rect x="60" y="1305" width="460" height="28" rx="6" fill="#34d399" fill-opacity="0.2"/>
+    <text x="70" y="1324" fill="#34d399" font-size="12" font-weight="700" letter-spacing="1">LAYER 5: DATA VALIDATION, INDEXING &amp; STORAGE</text>
+
+    <rect x="70" y="1350" width="345" height="165" rx="12" fill="#0f172a" stroke="#34d399" stroke-width="1.5"/>
+    <text x="95" y="1385" fill="#f8fafc" font-size="16" font-weight="700">🛡️ Pydantic Guard</text>
+    <text x="95" y="1412" fill="#94a3b8" font-size="12">• Strict JSON Type Enforcement</text>
+    <text x="95" y="1434" fill="#94a3b8" font-size="12">• Null Checks &amp; Normalization</text>
+
+    <rect x="445" y="1350" width="345" height="165" rx="12" fill="#0f172a" stroke="#34d399" stroke-width="1.5"/>
+    <text x="470" y="1385" fill="#f8fafc" font-size="16" font-weight="700">🔍 Elasticsearch 8</text>
+    <text x="470" y="1412" fill="#94a3b8" font-size="12">• Vector + BM25 Hybrid Index</text>
+    <text x="470" y="1434" fill="#94a3b8" font-size="12">• Dense Embedding Search</text>
+
+    <rect x="820" y="1350" width="345" height="165" rx="12" fill="#0f172a" stroke="#34d399" stroke-width="1.5"/>
+    <text x="845" y="1385" fill="#f8fafc" font-size="16" font-weight="700">🐘 Neon Postgres</text>
+    <text x="845" y="1412" fill="#94a3b8" font-size="12">• Relational Data &amp; User Logs</text>
+    <text x="845" y="1434" fill="#94a3b8" font-size="12">• ACID Compliance Audit</text>
+
+    <rect x="1195" y="1350" width="335" height="165" rx="12" fill="#0f172a" stroke="#34d399" stroke-width="1.5"/>
+    <text x="1215" y="1385" fill="#f8fafc" font-size="16" font-weight="700">⚡ Redis Cache</text>
+    <text x="1215" y="1412" fill="#94a3b8" font-size="12">• Rapid Session Cache</text>
+    <text x="1215" y="1434" fill="#94a3b8" font-size="12">• Response Queue (24h TTL)</text>
+  </g>
+</svg>

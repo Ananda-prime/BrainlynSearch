@@ -1,0 +1,243 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 2300" width="100%" height="100%" style="background-color: #0b0f19; font-family: 'Inter', system-ui, -apple-system, sans-serif;">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="grad-brainlyn" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#4f46e5"/>
+    </linearGradient>
+    <linearGradient id="grad-mcp" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </linearGradient>
+    <linearGradient id="grad-report" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+
+    <!-- Marker Arrows -->
+    <marker id="arrow-indigo" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#6366f1"/>
+    </marker>
+    <marker id="arrow-cyan" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#38bdf8"/>
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#10b981"/>
+    </marker>
+    <marker id="arrow-purple" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#c084fc"/>
+    </marker>
+  </defs>
+
+  <!-- Title Banner -->
+  <rect x="40" y="30" width="1520" height="80" rx="16" fill="#141c2e" stroke="#1e293b" stroke-width="2"/>
+  <text x="70" y="70" fill="#f8fafc" font-size="22" font-weight="700">BRAINLYNSEARCH: COMPLETE END-TO-END DATA FLOW (FAST SEARCH ➔ MCP &amp; MULTI-AGENT DEEP REPORT)</text>
+  <rect x="1220" y="52" width="320" height="34" rx="17" fill="#6366f1" fill-opacity="0.2" stroke="#6366f1" stroke-width="1"/>
+  <text x="1380" y="74" fill="#818cf8" font-size="12" font-weight="700" text-anchor="middle">LIVE RECORD TO COMPLETE REPORT</text>
+
+  <!-- STEP 1: BRAINLYNSEARCH UI & ELASTICSEARCH -->
+  <g id="step-1">
+    <rect x="40" y="140" width="1520" height="300" rx="16" fill="#141c2e" fill-opacity="0.7" stroke="#6366f1" stroke-width="2"/>
+    <rect x="60" y="155" width="480" height="28" rx="6" fill="#6366f1" fill-opacity="0.2"/>
+    <text x="70" y="174" fill="#818cf8" font-size="12" font-weight="700" letter-spacing="1">STEP 1: USER SEARCH &amp; INSTANT ELASTICSEARCH RESULTS DISPLAY</text>
+
+    <!-- Search Input Component -->
+    <rect x="70" y="200" width="440" height="215" rx="12" fill="#0b0f19" stroke="#6366f1" stroke-width="1.5"/>
+    <text x="95" y="235" fill="#f8fafc" font-size="15" font-weight="700">🔍 Brainlynsearch UI Search Input</text>
+    <rect x="95" y="250" width="390" height="36" rx="6" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+    <text x="110" y="273" fill="#38bdf8" font-size="13" font-family="monospace">"NICE INTERNATIONAL LIMITED"</text>
+    <text x="95" y="310" fill="#94a3b8" font-size="12">Filters: All Courts | State: Delhi | District: New Delhi</text>
+    <rect x="95" y="330" width="390" height="32" rx="6" fill="#4f46e5"/>
+    <text x="290" y="351" fill="#ffffff" font-size="13" font-weight="700" text-anchor="middle">Search Now</text>
+    <text x="95" y="395" fill="#34d399" font-size="11" font-weight="600">⚡ Found: 97 matches | Time: 3617.9 ms</text>
+
+    <!-- Instant Result Cards Mock (Matching screenshot) -->
+    <rect x="540" y="200" width="990" height="215" rx="12" fill="#0b0f19" stroke="#38bdf8" stroke-width="1.5"/>
+    <text x="565" y="230" fill="#f8fafc" font-size="14" font-weight="700">📋 Instant Search Result Card (Elasticsearch Cache)</text>
+
+    <!-- Card 1 -->
+    <rect x="565" y="245" width="940" height="150" rx="8" fill="#141c2e" stroke="#38bdf8" stroke-width="1"/>
+    <text x="585" y="270" fill="#ffffff" font-size="13" font-weight="700">THE DELHI SAFE DEPOSIT CO LTD Vs NICE INTERNATIONAL LIMITED</text>
+    <rect x="1350" y="255" width="140" height="22" rx="4" fill="#6366f1" fill-opacity="0.3"/>
+    <text x="1420" y="270" fill="#818cf8" font-size="10" font-family="monospace" text-anchor="middle">DLND020015032021</text>
+
+    <text x="585" y="295" fill="#94a3b8" font-size="11">Case No: <tspan fill="#f8fafc">Warrant or Summons Criminal Cases/833/2021</tspan> | Date: <tspan fill="#f8fafc">23-01-2021</tspan></text>
+    <text x="585" y="315" fill="#94a3b8" font-size="11">Establishment: <tspan fill="#f8fafc">Chief Metropolitan Magistrate, New Delhi, PHC</tspan> | Status: <tspan fill="#fbbf24">PENDING</tspan></text>
+
+    <!-- ACTION BUTTON -->
+    <rect x="585" y="335" width="905" height="42" rx="8" fill="#6366f1"/>
+    <text x="1037" y="361" fill="#ffffff" font-size="14" font-weight="700" text-anchor="middle">⚡ GENERATE COMPLETE AI DEEP REPORT (MCP + AGENTS)</text>
+  </g>
+
+  <!-- ARROW STEP 1 -> STEP 2 -->
+  <path d="M 1037 440 L 1037 490 L 800 490 L 800 510" stroke="#38bdf8" stroke-width="3" marker-end="url(#arrow-cyan)"/>
+  <rect x="880" y="478" width="310" height="24" rx="12" fill="#38bdf8" fill-opacity="0.2" stroke="#38bdf8" stroke-width="1"/>
+  <text x="1035" y="494" fill="#38bdf8" font-size="11" font-weight="700" text-anchor="middle">USER CLICKS RECORD ➔ TRIGGER MCP</text>
+
+  <!-- STEP 2: MCP SERVER & CENTRAL ROUTER GATEWAY -->
+  <g id="step-2">
+    <rect x="40" y="520" width="1520" height="150" rx="16" fill="#141c2e" stroke="#38bdf8" stroke-width="2"/>
+    <rect x="60" y="535" width="460" height="28" rx="6" fill="#38bdf8" fill-opacity="0.2"/>
+    <text x="70" y="554" fill="#38bdf8" font-size="12" font-weight="700" letter-spacing="1">STEP 2: MCP SERVER PROTOCOL GATEWAY &amp; TASK ROUTER</text>
+
+    <rect x="70" y="575" width="1460" height="75" rx="10" fill="#0b0f19" stroke="#38bdf8" stroke-width="1.5"/>
+    <text x="95" y="605" fill="#f8fafc" font-size="15" font-weight="700">🔌 MCP Core Protocol Server (JSON-RPC 2.0)</text>
+    <text x="95" y="628" fill="#94a3b8" font-size="12">Receives Target Payload: <tspan fill="#38bdf8" font-family="monospace">CNR: DLND020015032021 | Party: NICE INTERNATIONAL LIMITED | Case No: 833/2021</tspan> ➔ Activates AI Agent Team</text>
+  </g>
+
+  <!-- ARROW STEP 2 -> STEP 3 -->
+  <path d="M 800 670 L 800 710" stroke="#c084fc" stroke-width="3" marker-end="url(#arrow-purple)"/>
+
+  <!-- STEP 3: PARALLEL MULTI-AGENT TEAM EXECUTION VIA MCP TOOLS -->
+  <g id="step-3">
+    <rect x="40" y="720" width="1520" height="780" rx="16" fill="#141c2e" stroke="#c084fc" stroke-width="2"/>
+    <rect x="60" y="735" width="580" height="28" rx="6" fill="#c084fc" fill-opacity="0.2"/>
+    <text x="70" y="754" fill="#c084fc" font-size="12" font-weight="700" letter-spacing="1">STEP 3: PARALLEL MULTI-AGENT TEAM EXECUTION (MCP TOOL CALLS)</text>
+
+    <!-- Agent 1: Live Scraping -->
+    <rect x="70" y="780" width="710" height="310" rx="12" fill="#0b0f19" stroke="#c084fc" stroke-width="1.5"/>
+    <rect x="85" y="795" width="220" height="24" rx="4" fill="#c084fc" fill-opacity="0.2"/>
+    <text x="95" y="812" fill="#c084fc" font-size="11" font-weight="700">AGENT A: LIVE EXTRACTION</text>
+    <text x="95" y="840" fill="#f8fafc" font-size="15" font-weight="700">🕷️ eCourts Portal Scraper Agent</text>
+    <text x="95" y="865" fill="#38bdf8" font-size="12" font-family="monospace">MCP Tool: ecourts_fetch_live_case(cnr="DLND020015032021")</text>
+    <rect x="95" y="880" width="660" height="190" rx="8" fill="#141c2e" stroke="#334155" stroke-width="1"/>
+    <text x="110" y="905" fill="#f8fafc" font-size="12" font-weight="600">4-Phase Execution Pipeline:</text>
+    <text x="110" y="925" fill="#94a3b8" font-size="11">• Phase 1: Access eCourts Delhi / New Delhi District Portal</text>
+    <text x="110" y="945" fill="#94a3b8" font-size="11">• Phase 2: CNR Decision Node ➔ Direct 16-Char CNR Match</text>
+    <text x="110" y="965" fill="#94a3b8" font-size="11">• Phase 3: AI Vision Captcha Solver ➔ Bypasses Captcha &amp; Submits</text>
+    <text x="110" y="985" fill="#94a3b8" font-size="11">• Phase 4: Opens Detail Page ➔ Extracts Case Status &amp; Next Date</text>
+    <text x="110" y="1005" fill="#94a3b8" font-size="11">• Captures Full Chronological Proceedings History Table</text>
+    <text x="110" y="1025" fill="#94a3b8" font-size="11">• Locates Official Signed Orders &amp; Judgment PDFs</text>
+
+    <!-- Agent 2: PDF Order & Judgment Parser -->
+    <rect x="810" y="780" width="720" height="310" rx="12" fill="#0b0f19" stroke="#f43f5e" stroke-width="1.5"/>
+    <rect x="825" y="795" width="220" height="24" rx="4" fill="#f43f5e" fill-opacity="0.2"/>
+    <text x="835" y="811" fill="#f43f5e" font-size="11" font-weight="700">AGENT B: PDF JUDGMENT PARSER</text>
+    <text x="835" y="840" fill="#f8fafc" font-size="15" font-weight="700">📄 Signed Order PDF OCR Agent</text>
+    <text x="835" y="865" fill="#38bdf8" font-size="12" font-family="monospace">MCP Tool: download_and_ocr_pdf(url)</text>
+    <rect x="835" y="880" width="670" height="190" rx="8" fill="#141c2e" stroke="#334155" stroke-width="1"/>
+    <text x="850" y="905" fill="#f8fafc" font-size="12" font-weight="600">Document Intelligence Pipeline:</text>
+    <text x="850" y="925" fill="#94a3b8" font-size="11">• Downloads Official Signed Judgment PDF files from eCourts</text>
+    <text x="850" y="945" fill="#94a3b8" font-size="11">• Tesseract OCR + Vision LLM extracts scanned text &amp; signatures</text>
+    <text x="850" y="965" fill="#94a3b8" font-size="11">• Identifies Coram / Judge Name (e.g. Chief Metropolitan Magistrate)</text>
+    <text x="850" y="985" fill="#94a3b8" font-size="11">• Extracts Warrant / Summons Conditions &amp; Interim Directions</text>
+    <text x="850" y="1005" fill="#94a3b8" font-size="11">• Summarizes Judicial Observations &amp; Next Date Mandates</text>
+    <text x="850" y="1025" fill="#94a3b8" font-size="11">• Formats Clean PDF Summaries for UI Download</text>
+
+    <!-- Agent 3: Corporate MCA Cross-Reference Agent -->
+    <rect x="70" y="1115" width="710" height="360" rx="12" fill="#0b0f19" stroke="#fbbf24" stroke-width="1.5"/>
+    <rect x="85" y="1130" width="240" height="24" rx="4" fill="#fbbf24" fill-opacity="0.2"/>
+    <text x="95" y="1146" fill="#fbbf24" font-size="11" font-weight="700">AGENT C: MCA CORPORATE SEARCH</text>
+    <text x="95" y="1175" fill="#f8fafc" font-size="15" font-weight="700">🏢 Corporate &amp; Director Cross-Ref Agent</text>
+    <text x="95" y="1200" fill="#38bdf8" font-size="12" font-family="monospace">MCP Tool: mca_director_lookup(company="NICE INTERNATIONAL LIMITED")</text>
+    <rect x="95" y="1215" width="660" height="240" rx="8" fill="#141c2e" stroke="#334155" stroke-width="1"/>
+    <text x="110" y="1240" fill="#f8fafc" font-size="12" font-weight="600">Company Intelligence Data:</text>
+    <text x="110" y="1260" fill="#94a3b8" font-size="11">• Corporate Identification Number (CIN) Lookup</text>
+    <text x="110" y="1280" fill="#94a3b8" font-size="11">• Directors &amp; Key Management Personnel (KMP) List &amp; DINs</text>
+    <text x="110" y="1300" fill="#94a3b8" font-size="11">• Registered Office Address &amp; Incorporation Date</text>
+    <text x="110" y="1320" fill="#94a3b8" font-size="11">• Cross-links Litigant Company with Active Directors</text>
+    <text x="110" y="1340" fill="#94a3b8" font-size="11">• Financial Index &amp; Charges Registered</text>
+    <text x="110" y="1360" fill="#94a3b8" font-size="11">• Regulatory Compliance &amp; ROC Filings Status</text>
+    <text x="110" y="1380" fill="#94a3b8" font-size="11">• Corporate Network Map for Customer Risk Briefing</text>
+
+    <!-- Agent 4: Legal Risk & Timeline Synthesis Agent -->
+    <rect x="810" y="1115" width="720" height="360" rx="12" fill="#0b0f19" stroke="#10b981" stroke-width="1.5"/>
+    <rect x="825" y="1130" width="240" height="24" rx="4" fill="#10b981" fill-opacity="0.2"/>
+    <text x="835" y="1146" fill="#10b981" font-size="11" font-weight="700">AGENT D: RISK &amp; TIMELINE EVALUATOR</text>
+    <text x="835" y="1175" fill="#f8fafc" font-size="15" font-weight="700">⚖️ Legal Risk &amp; Timeline Synthesizer Agent</text>
+    <text x="835" y="1200" fill="#38bdf8" font-size="12" font-family="monospace">MCP Tool: calculate_risk_score(case_history, charges)</text>
+    <rect x="835" y="1215" width="670" height="240" rx="8" fill="#141c2e" stroke="#334155" stroke-width="1"/>
+    <text x="850" y="1240" fill="#f8fafc" font-size="12" font-weight="600">Risk Assessment Engine:</text>
+    <text x="850" y="1260" fill="#94a3b8" font-size="11">• Computes Legal Risk Score (e.g. <tspan fill="#f43f5e" font-weight="700">85/100 HIGH RISK</tspan>)</text>
+    <text x="850" y="1280" fill="#94a3b8" font-size="11">• Analyzes Pending Criminal Offenses (NI Act 138 / Cheque Bounce)</text>
+    <text x="850" y="1300" fill="#94a3b8" font-size="11">• Builds Complete Chronological Proceedings Timeline</text>
+    <text x="850" y="1320" fill="#94a3b8" font-size="11">• Flags Next Date Mandates &amp; Pending Warrant Status</text>
+    <text x="850" y="1340" fill="#94a3b8" font-size="11">• Generates Executive Summary &amp; Legal Audit Findings</text>
+    <text x="850" y="1360" fill="#94a3b8" font-size="11">• Passes Clean JSON to Pydantic Schema Guard</text>
+    <text x="850" y="1380" fill="#94a3b8" font-size="11">• Prepares Payload for Customer UI &amp; Elastic Index Sync</text>
+  </g>
+
+  <!-- ARROW STEP 3 -> STEP 4 -->
+  <path d="M 800 1500 L 800 1540" stroke="#10b981" stroke-width="3" marker-end="url(#arrow-green)"/>
+
+  <!-- STEP 4: COMPLETE DEEP REPORT DELIVERED TO CUSTOMER UI -->
+  <g id="step-4">
+    <rect x="40" y="1550" width="1520" height="680" rx="16" fill="#042f2e" stroke="#10b981" stroke-width="2"/>
+    <rect x="60" y="1565" width="580" height="28" rx="6" fill="#10b981" fill-opacity="0.2"/>
+    <text x="70" y="1584" fill="#34d399" font-size="12" font-weight="700" letter-spacing="1">STEP 4: COMPLETE DEEP AI REPORT STREAMED TO CUSTOMER UI</text>
+
+    <!-- Report Header Box -->
+    <rect x="70" y="1610" width="1460" height="85" rx="10" fill="#0b0f19" stroke="#10b981" stroke-width="1.5"/>
+    <text x="95" y="1640" fill="#34d399" font-size="16" font-weight="700">✨ COMPLETE AI DEEP AUDIT REPORT GENERATED FOR RECORD DLND020015032021</text>
+    <text x="95" y="1665" fill="#f8fafc" font-size="13">Target: <tspan font-weight="700">THE DELHI SAFE DEPOSIT CO LTD Vs NICE INTERNATIONAL LIMITED</tspan> | Risk Score: <tspan fill="#f43f5e" font-weight="700">85/100 (HIGH RISK)</tspan></text>
+
+    <!-- 4 Report Tabs Displayed to Customer -->
+    <g id="report-grid">
+      <!-- Section 1 -->
+      <rect x="70" y="1715" width="340" height="490" rx="10" fill="#141c2e" stroke="#334155" stroke-width="1"/>
+      <text x="90" y="1745" fill="#38bdf8" font-size="14" font-weight="700">📌 Executive Brief &amp; Status</text>
+      <rect x="90" y="1760" width="300" height="430" rx="8" fill="#0b0f19"/>
+      <text x="105" y="1785" fill="#94a3b8" font-size="11">CNR: <tspan fill="#f8fafc" font-family="monospace">DLND020015032021</tspan></text>
+      <text x="105" y="1805" fill="#94a3b8" font-size="11">Case Type: <tspan fill="#f43f5e">CRIMINAL (NI Act 138)</tspan></text>
+      <text x="105" y="1825" fill="#94a3b8" font-size="11">Current Status: <tspan fill="#fbbf24">PENDING</tspan></text>
+      <text x="105" y="1845" fill="#94a3b8" font-size="11">State/District: <tspan fill="#f8fafc">Delhi / New Delhi</tspan></text>
+      <text x="105" y="1865" fill="#94a3b8" font-size="11">Establishment: <tspan fill="#f8fafc">CMM, Patiala House</tspan></text>
+      <text x="105" y="1885" fill="#94a3b8" font-size="11">Filing Date: <tspan fill="#f8fafc">23-01-2021</tspan></text>
+      <text x="105" y="1905" fill="#94a3b8" font-size="11">Petitioner: <tspan fill="#f8fafc">DELHI SAFE DEPOSIT</tspan></text>
+      <text x="105" y="1925" fill="#94a3b8" font-size="11">Respondent: <tspan fill="#f8fafc">NICE INTERNATIONAL</tspan></text>
+      <rect x="105" y="1945" width="270" height="235" rx="6" fill="#141c2e"/>
+      <text x="115" y="1970" fill="#34d399" font-size="11" font-weight="600">Summary Findings:</text>
+      <text x="115" y="1990" fill="#94a3b8" font-size="10">• Pending criminal summons issued</text>
+      <text x="115" y="2010" fill="#94a3b8" font-size="10">• Multiple related filings detected</text>
+      <text x="115" y="2030" fill="#94a3b8" font-size="10">• High financial liability risk</text>
+
+      <!-- Section 2 -->
+      <rect x="440" y="1715" width="340" height="490" rx="10" fill="#141c2e" stroke="#334155" stroke-width="1"/>
+      <text x="460" y="1745" fill="#38bdf8" font-size="14" font-weight="700">📅 Hearing &amp; Proceedings</text>
+      <rect x="460" y="1760" width="300" height="430" rx="8" fill="#0b0f19"/>
+      <text x="475" y="1785" fill="#34d399" font-size="12" font-weight="700">Next Hearing Date:</text>
+      <rect x="475" y="1795" width="270" height="35" rx="6" fill="#10b981" fill-opacity="0.2"/>
+      <text x="610" y="1817" fill="#34d399" font-size="13" font-weight="700" text-anchor="middle">18-09-2026 (Room 12)</text>
+      <text x="475" y="1850" fill="#94a3b8" font-size="11">Purpose: <tspan fill="#f8fafc">Appearance &amp; Arguments</tspan></text>
+      <text x="475" y="1880" fill="#38bdf8" font-size="12" font-weight="700">Chronological Timeline:</text>
+      <text x="475" y="1905" fill="#94a3b8" font-size="10">• 23-01-2021: Case Registered</text>
+      <text x="475" y="1925" fill="#94a3b8" font-size="10">• 15-03-2021: Cognizance Taken</text>
+      <text x="475" y="1945" fill="#94a3b8" font-size="10">• 10-08-2022: Summons Issued</text>
+      <text x="475" y="1965" fill="#94a3b8" font-size="10">• 04-11-2023: Notice Served</text>
+      <text x="475" y="1985" fill="#94a3b8" font-size="10">• 12-05-2024: Bailable Warrant</text>
+      <text x="475" y="2005" fill="#94a3b8" font-size="10">• 18-09-2026: Upcoming Hearing</text>
+
+      <!-- Section 3 -->
+      <rect x="810" y="1715" width="340" height="490" rx="10" fill="#141c2e" stroke="#334155" stroke-width="1"/>
+      <text x="830" y="1745" fill="#38bdf8" font-size="14" font-weight="700">🏢 MCA Corporate Profile</text>
+      <rect x="830" y="1760" width="300" height="430" rx="8" fill="#0b0f19"/>
+      <text x="845" y="1785" fill="#fbbf24" font-size="11" font-weight="700">NICE INTERNATIONAL LIMITED</text>
+      <text x="845" y="1805" fill="#94a3b8" font-size="11">CIN: <tspan fill="#f8fafc" font-family="monospace">U74899DL1995PLC068123</tspan></text>
+      <text x="845" y="1825" fill="#94a3b8" font-size="11">Status: <tspan fill="#34d399">ACTIVE</tspan></text>
+      <text x="845" y="1845" fill="#94a3b8" font-size="11">ROC: <tspan fill="#f8fafc">ROC Delhi</tspan></text>
+      <text x="845" y="1875" fill="#38bdf8" font-size="12" font-weight="700">Active Directors List:</text>
+      <text x="845" y="1900" fill="#94a3b8" font-size="10">1. Director A (DIN: 00123456)</text>
+      <text x="845" y="1920" fill="#94a3b8" font-size="10">2. Director B (DIN: 00789012)</text>
+      <text x="845" y="1950" fill="#38bdf8" font-size="12" font-weight="700">Registered Office:</text>
+      <text x="845" y="1970" fill="#94a3b8" font-size="10">Connaught Place, New Delhi 110001</text>
+
+      <!-- Section 4 -->
+      <rect x="1180" y="1715" width="340" height="490" rx="10" fill="#141c2e" stroke="#334155" stroke-width="1"/>
+      <text x="1200" y="1745" fill="#38bdf8" font-size="14" font-weight="700">📄 Orders &amp; PDF Downloads</text>
+      <rect x="1200" y="1760" width="300" height="430" rx="8" fill="#0b0f19"/>
+      <text x="1215" y="1785" fill="#f43f5e" font-size="12" font-weight="700">Official Signed Order Sheets:</text>
+
+      <rect x="1215" y="1800" width="270" height="45" rx="6" fill="#1e293b" stroke="#f43f5e" stroke-width="1"/>
+      <text x="1225" y="1820" fill="#f8fafc" font-size="11" font-weight="600">Order_23_01_2021.pdf</text>
+      <text x="1225" y="1836" fill="#34d399" font-size="10">📥 Download Signed PDF (AI OCR Verified)</text>
+
+      <rect x="1215" y="1855" width="270" height="45" rx="6" fill="#1e293b" stroke="#f43f5e" stroke-width="1"/>
+      <text x="1225" y="1875" fill="#f8fafc" font-size="11" font-weight="600">Order_12_05_2024.pdf</text>
+      <text x="1225" y="1891" fill="#34d399" font-size="10">📥 Download Signed PDF (AI OCR Verified)</text>
+
+      <rect x="1215" y="1910" width="270" height="80" rx="6" fill="#141c2e"/>
+      <text x="1225" y="1930" fill="#38bdf8" font-size="11" font-weight="700">AI PDF Ruling Summary:</text>
+      <text x="1225" y="1950" fill="#94a3b8" font-size="10">Bailable warrant issued due to non-appearance. Next date fixed for 18-09-2026.</text>
+    </g>
+  </g>
+</svg>

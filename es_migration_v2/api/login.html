@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brainlynsearch - Secure Login</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;800&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --bg-dark: #0f172a;
+            --bg-glass: rgba(30, 41, 59, 0.7);
+            --border-glass: rgba(255, 255, 255, 0.1);
+            --text-main: #f1f5f9;
+            --text-sub: #94a3b8;
+            --error-red: #ef4444;
+            --success-green: #10b981;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            background-image:
+                radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.1) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(168, 85, 247, 0.08) 0px, transparent 50%),
+                url('/legal_bg.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-y: auto;
+            padding: 40px 20px;
+            position: relative;
+        }
+
+        /* Ambient Glow Backgrounds */
+        .glow-orange {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+            top: -100px;
+            right: -100px;
+            filter: blur(80px);
+            z-index: 0;
+        }
+
+        .glow-blue {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.12) 0%, transparent 70%);
+            bottom: -150px;
+            left: -150px;
+            filter: blur(100px);
+            z-index: 0;
+        }
+
+        /* Glass Container Card */
+        .card-container {
+            background: var(--bg-glass);
+            border: 1px solid var(--border-glass);
+            border-radius: 24px;
+            width: 100%;
+            max-width: 450px;
+            padding: 40px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            z-index: 1;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+        }
+
+        /* Brand Header */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(to right, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            color: var(--text-sub);
+            font-size: 0.95rem;
+        }
+
+        /* Navigation Tabs */
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .tab-btn {
+            flex: 1;
+            background: none;
+            border: none;
+            color: var(--text-sub);
+            font-size: 1rem;
+            font-weight: 600;
+            padding: 12px;
+            cursor: pointer;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+        }
+
+        .tab-indicator {
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            height: 2px;
+            width: 50%;
+            background: var(--primary);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Forms Styling */
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .input-group label {
+            display: block;
+            color: var(--text-sub);
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+            letter-spacing: 0.3px;
+        }
+
+        .input-group input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-glass);
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: var(--text-main);
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2);
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        /* Buttons */
+        .submit-btn {
+            width: 100%;
+            background: var(--primary);
+            border: none;
+            border-radius: 12px;
+            padding: 14px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        /* OTP Code Verification Form */
+        .otp-container {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+            gap: 10px;
+        }
+
+        .otp-input {
+            width: 48px;
+            height: 52px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-glass);
+            border-radius: 12px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            transition: all 0.3s;
+        }
+
+        .otp-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 12px rgba(99, 102, 241, 0.3);
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        /* OTP Countdown Timer and Resend styling */
+        .otp-timer-container {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 0.9rem;
+            color: var(--text-sub);
+        }
+
+        .timer-accent {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .resend-btn {
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: underline;
+            transition: opacity 0.3s;
+        }
+
+        .resend-btn:disabled {
+            color: var(--text-sub);
+            text-decoration: none;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        /* Message banners */
+        .msg-banner {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.88rem;
+            font-weight: 500;
+            display: none;
+            animation: slideDown 0.3s ease;
+        }
+
+        .msg-banner.error {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: var(--error-red);
+            display: block;
+        }
+
+        .msg-banner.success {
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: var(--success-green);
+            display: block;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Loader utility */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, .3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="glow-orange"></div>
+    <div class="glow-blue"></div>
+
+    <div class="card-container" id="auth-card">
+        <!-- Message Banner -->
+        <div class="msg-banner" id="msg-banner"></div>
+
+        <!-- Brand Title -->
+        <div class="header">
+            <h1>Brainlynsearch</h1>
+            <p id="card-desc">Secure access to litigation records</p>
+        </div>
+
+        <!-- TAB NAVIGATION -->
+        <div class="tabs" id="auth-tabs">
+            <button class="tab-btn active" onclick="switchTab('login')">Log In</button>
+            <button class="tab-btn" onclick="switchTab('signup')">Sign Up</button>
+            <div class="tab-indicator" id="tab-indicator"></div>
+        </div>
+
+        <!-- LOGIN FORM -->
+        <div class="form-section active" id="login-section">
+            <form onsubmit="handleLogin(event)">
+                <div class="input-group">
+                    <label for="login-email">Email Address</label>
+                    <input type="email" id="login-email" required placeholder="name@company.com">
+                </div>
+                <div class="input-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="submit-btn" id="login-submit-btn">Log In</button>
+            </form>
+        </div>
+
+        <!-- SIGNUP FORM -->
+        <div class="form-section" id="signup-section">
+            <form onsubmit="handleSignup(event)">
+                <div class="input-group">
+                    <label for="signup-name">Full Name</label>
+                    <input type="text" id="signup-name" required placeholder="John Doe">
+                </div>
+                <div class="input-group">
+                    <label for="signup-email">Email Address</label>
+                    <input type="email" id="signup-email" required placeholder="name@company.com">
+                </div>
+                <div class="input-group">
+                    <label for="signup-password">Password</label>
+                    <input type="password" id="signup-password" required minlength="6"
+                        placeholder="At least 6 characters">
+                </div>
+                
+                <div class="input-group">
+                    <label>Account Type</label>
+                    <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                        <button type="button" id="type-ind" style="border: 1px solid var(--primary); border-radius: 12px; padding: 10px; background: rgba(99, 102, 241, 0.15); color: var(--text-main); font-weight: 600; cursor: pointer; transition: all 0.3s; flex: 1; font-family: inherit;" onclick="setSignupType('individual')">Individual</button>
+                        <button type="button" id="type-org" style="border: 1px solid var(--border-glass); border-radius: 12px; padding: 10px; background: rgba(255,255,255,0.02); color: var(--text-sub); font-weight: 600; cursor: pointer; transition: all 0.3s; flex: 1; font-family: inherit;" onclick="setSignupType('org')">Organization</button>
+                    </div>
+                </div>
+
+                <div id="org-options" style="display: none; margin-bottom: 20px; background: rgba(0, 0, 0, 0.15); border: 1px solid var(--border-glass); border-radius: 14px; padding: 18px; animation: fadeIn 0.3s ease;">
+                    <label style="display: block; color: var(--primary); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px;">Organization Setup</label>
+                    <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                        <button type="button" id="flow-create" style="border: 1px solid var(--primary); border-radius: 8px; padding: 8px; background: rgba(99, 102, 241, 0.1); color: var(--text-main); font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.3s; flex: 1; font-family: inherit;" onclick="setOrgFlow('create')">Create Org</button>
+                        <button type="button" id="flow-join" style="border: 1px solid var(--border-glass); border-radius: 8px; padding: 8px; background: rgba(255,255,255,0.02); color: var(--text-sub); font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.3s; flex: 1; font-family: inherit;" onclick="setOrgFlow('join')">Join Org</button>
+                    </div>
+                    
+                    <div class="input-group" id="org-name-group" style="margin-bottom: 0;">
+                        <label for="signup-org-name">Organization Name</label>
+                        <input type="text" id="signup-org-name" placeholder="Acme Corporation">
+                    </div>
+
+                    <div id="org-join-info" style="display: none; font-size: 0.82rem; color: var(--text-sub); line-height: 1.45;">
+                        <span style="color: #38bdf8; font-weight: 600;">Auto-Detect:</span> We will automatically link your account to your organization based on your work email domain (e.g., name@<b>company.com</b>).
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn" id="signup-submit-btn">Create Account</button>
+            </form>
+        </div>
+
+        <!-- OTP VERIFICATION VIEW -->
+        <div class="form-section" id="otp-section">
+            <div class="otp-timer-container">
+                <p>We've sent a 6-digit verification code to <br><strong id="otp-target-email"
+                        style="color: var(--text-main);"></strong></p>
+            </div>
+            <form onsubmit="handleVerifyOtp(event)">
+                <div class="otp-container">
+                    <input type="text" class="otp-input" maxlength="1" required oninput="otpInput(this, 1)"
+                        onkeydown="otpKeydown(event, 1)">
+                    <input type="text" class="otp-input" maxlength="1" required oninput="otpInput(this, 2)"
+                        onkeydown="otpKeydown(event, 2)">
+                    <input type="text" class="otp-input" maxlength="1" required oninput="otpInput(this, 3)"
+                        onkeydown="otpKeydown(event, 3)">
+                    <input type="text" class="otp-input" maxlength="1" required oninput="otpInput(this, 4)"
+                        onkeydown="otpKeydown(event, 4)">
+                    <input type="text" class="otp-input" maxlength="1" required oninput="otpInput(this, 5)"
+                        onkeydown="otpKeydown(event, 5)">
+                    <input type="text" class="otp-input" maxlength="1" required oninput="otpInput(this, 6)"
+                        onkeydown="otpKeydown(event, 6)">
+                </div>
+
+                <div class="otp-timer-container">
+                    <span id="otp-timer-message">Resend code in <span class="timer-accent"
+                            id="countdown-timer">120</span> seconds</span>
+                    <button type="button" class="resend-btn" id="resend-btn" disabled onclick="resendOtp()">Resend
+                        OTP</button>
+                </div>
+
+                <button type="submit" class="submit-btn" id="otp-submit-btn">Verify & Activate</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let currentTab = 'login';
+        let countdownInterval = null;
+        let pendingSignupEmail = '';
+        let signupCategory = 'individual';
+        let orgFlow = 'create';
+
+        function setSignupType(type) {
+            signupCategory = type;
+            const btnInd = document.getElementById('type-ind');
+            const btnOrg = document.getElementById('type-org');
+            const orgOpts = document.getElementById('org-options');
+            
+            if (type === 'individual') {
+                btnInd.style.border = '1px solid var(--primary)';
+                btnInd.style.background = 'rgba(99, 102, 241, 0.15)';
+                btnInd.style.color = 'var(--text-main)';
+                
+                btnOrg.style.border = '1px solid var(--border-glass)';
+                btnOrg.style.background = 'rgba(255, 255, 255, 0.02)';
+                btnOrg.style.color = 'var(--text-sub)';
+                
+                orgOpts.style.display = 'none';
+                document.getElementById('signup-org-name').required = false;
+            } else {
+                btnOrg.style.border = '1px solid var(--primary)';
+                btnOrg.style.background = 'rgba(99, 102, 241, 0.15)';
+                btnOrg.style.color = 'var(--text-main)';
+                
+                btnInd.style.border = '1px solid var(--border-glass)';
+                btnInd.style.background = 'rgba(255, 255, 255, 0.02)';
+                btnInd.style.color = 'var(--text-sub)';
+                
+                orgOpts.style.display = 'block';
+                setOrgFlow(orgFlow);
+            }
+        }
+
+        function setOrgFlow(flow) {
+            orgFlow = flow;
+            const btnCreate = document.getElementById('flow-create');
+            const btnJoin = document.getElementById('flow-join');
+            const orgNameGroup = document.getElementById('org-name-group');
+            const orgNameInput = document.getElementById('signup-org-name');
+            const orgJoinInfo = document.getElementById('org-join-info');
+            
+            if (flow === 'create') {
+                btnCreate.style.border = '1px solid var(--primary)';
+                btnCreate.style.background = 'rgba(99, 102, 241, 0.15)';
+                btnCreate.style.color = 'var(--text-main)';
+                
+                btnJoin.style.border = '1px solid var(--border-glass)';
+                btnJoin.style.background = 'rgba(255, 255, 255, 0.02)';
+                btnJoin.style.color = 'var(--text-sub)';
+                
+                orgNameGroup.style.display = 'block';
+                orgNameInput.required = true;
+                if (orgJoinInfo) orgJoinInfo.style.display = 'none';
+            } else {
+                btnJoin.style.border = '1px solid var(--primary)';
+                btnJoin.style.background = 'rgba(99, 102, 241, 0.15)';
+                btnJoin.style.color = 'var(--text-main)';
+                
+                btnCreate.style.border = '1px solid var(--border-glass)';
+                btnCreate.style.background = 'rgba(255, 255, 255, 0.02)';
+                btnCreate.style.color = 'var(--text-sub)';
+                
+                orgNameGroup.style.display = 'none';
+                orgNameInput.required = false;
+                orgNameInput.value = '';
+                if (orgJoinInfo) orgJoinInfo.style.display = 'block';
+            }
+        }
+
+        // Switch tabs (Login / Signup)
+        function switchTab(tab) {
+            if (tab === currentTab) return;
+            currentTab = tab;
+
+            // Update Tab indicator position
+            const indicator = document.getElementById('tab-indicator');
+            indicator.style.transform = tab === 'login' ? 'translateX(0)' : 'translateX(100%)';
+
+            // Toggle active buttons
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => btn.classList.toggle('active'));
+
+            // Toggle form views
+            document.getElementById('login-section').classList.toggle('active', tab === 'login');
+            document.getElementById('signup-section').classList.toggle('active', tab === 'signup');
+            document.getElementById('otp-section').classList.remove('active');
+
+            // Reset details
+            clearMessage();
+            document.getElementById('auth-tabs').style.display = 'flex';
+            document.getElementById('card-desc').innerText = 'Secure access to litigation records';
+        }
+
+        // Show UI notifications
+        function showMessage(msg, isError = true) {
+            const banner = document.getElementById('msg-banner');
+            banner.className = `msg-banner ${isError ? 'error' : 'success'}`;
+            banner.innerHTML = msg;
+        }
+
+        function clearMessage() {
+            const banner = document.getElementById('msg-banner');
+            banner.className = 'msg-banner';
+            banner.innerHTML = '';
+        }
+
+        // Keyboard Auto-Focus for 6 OTP input boxes
+        function otpInput(element, index) {
+            element.value = element.value.replace(/[^0-9]/g, ''); // Number only
+            if (element.value.length === 1 && index < 6) {
+                document.querySelectorAll('.otp-input')[index].focus();
+            }
+        }
+
+        function otpKeydown(event, index) {
+            if (event.key === 'Backspace' && event.target.value === '' && index > 1) {
+                document.querySelectorAll('.otp-input')[index - 2].focus();
+            }
+        }
+
+        // Timer mechanics
+        function startCountdown() {
+            let seconds = 120;
+            const timerMsg = document.getElementById('otp-timer-message');
+            const countdownEl = document.getElementById('countdown-timer');
+            const resendBtn = document.getElementById('resend-btn');
+
+            resendBtn.disabled = true;
+            timerMsg.style.display = 'inline';
+            countdownEl.innerText = seconds;
+
+            clearInterval(countdownInterval);
+            countdownInterval = setInterval(() => {
+                seconds--;
+                countdownEl.innerText = seconds;
+                if (seconds <= 0) {
+                    clearInterval(countdownInterval);
+                    timerMsg.style.display = 'none';
+                    resendBtn.disabled = false;
+                }
+            }, 1000);
+        }
+
+        // AJAX Requests
+        async function handleLogin(event) {
+            event.preventDefault();
+            clearMessage();
+
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const submitBtn = document.getElementById('login-submit-btn');
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner"></span>Logging In...';
+
+            try {
+                // We use OAuth2 form body as required by FastAPI OAuth2PasswordRequestForm
+                const formData = new URLSearchParams();
+                formData.append('username', email);
+                formData.append('password', password);
+
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: formData
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    sessionStorage.setItem('access_token', data.access_token);
+                    showMessage('Login successful! Redirecting...', false);
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 1000);
+                } else if (response.status === 400) {
+                    // Could be wrong password OR unregistered email — both return 400
+                    showMessage(
+                        `${data.detail || 'Invalid email or password.'}<br><span style="font-size:0.82rem;margin-top:6px;display:inline-block;">Don\'t have an account? <a href="#" onclick="switchTab('signup'); return false;" style="color:var(--primary);text-decoration:underline;font-weight:600;">Sign Up here</a></span>`
+                    );
+                } else if (response.status === 403) {
+                    showMessage(data.detail || 'Account not yet verified.');
+                } else {
+                    showMessage(data.detail || 'Something went wrong. Please try again.');
+                }
+            } catch (err) {
+                showMessage('Network error. Please try again.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerText = 'Log In';
+            }
+        }
+
+        async function handleSignup(event) {
+            event.preventDefault();
+            clearMessage();
+
+            const name = document.getElementById('signup-name').value;
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            const submitBtn = document.getElementById('signup-submit-btn');
+
+            const signupType = signupCategory === 'individual' ? 'individual' : `org_${orgFlow}`;
+            const orgName = document.getElementById('signup-org-name').value;
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner"></span>Creating Account...';
+
+            try {
+                const response = await fetch('/api/auth/signup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        name, 
+                        email, 
+                        password,
+                        signup_type: signupType,
+                        org_name: orgName
+                    })
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    pendingSignupEmail = email;
+                    document.getElementById('otp-target-email').innerText = email;
+
+                    // Transition to OTP screen
+                    document.getElementById('signup-section').classList.remove('active');
+                    document.getElementById('auth-tabs').style.display = 'none';
+                    document.getElementById('card-desc').innerText = 'Verification Required';
+                    document.getElementById('otp-section').classList.add('active');
+
+                    startCountdown();
+                    showMessage('Account created. Enter OTP code sent to your email.', false);
+                } else {
+                    showMessage(data.detail || 'Signup failed.');
+                }
+            } catch (err) {
+                showMessage('Network error. Please try again.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerText = 'Create Account';
+            }
+        }
+
+        async function handleVerifyOtp(event) {
+            event.preventDefault();
+            clearMessage();
+
+            // Assemble OTP
+            const inputs = document.querySelectorAll('.otp-input');
+            let otp = '';
+            inputs.forEach(input => otp += input.value);
+
+            if (otp.length < 6) {
+                showMessage('Please enter all 6 digits.');
+                return;
+            }
+
+            const submitBtn = document.getElementById('otp-submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner"></span>Verifying...';
+
+            try {
+                const response = await fetch('/api/auth/verify-otp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: pendingSignupEmail, otp: otp })
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    showMessage('Account activated! You can now log in.', false);
+                    setTimeout(() => {
+                        // Switch to login tab
+                        switchTab('login');
+                        // Pre-populate email
+                        document.getElementById('login-email').value = pendingSignupEmail;
+                    }, 2000);
+                } else {
+                    showMessage(data.detail || 'Invalid or expired OTP.');
+                }
+            } catch (err) {
+                showMessage('Network error. Please try again.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerText = 'Verify & Activate';
+            }
+        }
+
+        async function resendOtp() {
+            clearMessage();
+            const resendBtn = document.getElementById('resend-btn');
+            resendBtn.disabled = true;
+
+            try {
+                const response = await fetch('/api/auth/resend-otp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: pendingSignupEmail })
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    showMessage('A new OTP has been sent to your email.', false);
+                    // Reset inputs
+                    document.querySelectorAll('.otp-input').forEach(input => input.value = '');
+                    document.querySelectorAll('.otp-input')[0].focus();
+                    startCountdown();
+                } else {
+                    showMessage(data.detail || 'Failed to resend OTP.');
+                    resendBtn.disabled = false;
+                }
+            } catch (err) {
+                showMessage('Network error.');
+                resendBtn.disabled = false;
+            }
+        }
+    </script>
+</body>
+
+</html>

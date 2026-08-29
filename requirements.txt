@@ -1,0 +1,27 @@
+# Core Search & Data Pipeline
+elasticsearch>=8.0.0,<9.0.0
+polars>=0.20.0
+pyarrow>=14.0.1
+connectorx>=0.3.2
+adbc-driver-postgresql>=0.10.0
+sqlalchemy>=2.0.0
+psycopg2-binary>=2.9.9
+
+# FastAPI Web Framework & API Server
+fastapi>=0.100.0
+uvicorn>=0.23.0
+pydantic>=2.0.0
+
+# Authentication & Security
+bcrypt>=4.0.1
+python-jose[cryptography]>=3.3.0
+python-multipart>=0.0.7
+
+# Caching & Failover
+redis>=5.0.0
+
+# Batch Screener (Excel processing)
+openpyxl>=3.1.2
+
+# Configuration & Utilities
+python-dotenv>=1.0.0
