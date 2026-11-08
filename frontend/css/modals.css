@@ -1,0 +1,171 @@
+/* ═══════════════════════════════════════════════════════════════
+   BRAINLYN AI SEARCH - MODALS & BILLING INVOICE SYSTEM
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Modal Overlays */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(4, 7, 18, 0.78);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    padding: 16px;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-box {
+    background: #0f172a;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-modal);
+    width: 100%;
+    max-width: 520px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transform: translateY(12px) scale(0.98);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.modal-overlay.active .modal-box {
+    transform: translateY(0) scale(1);
+}
+
+.modal-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    color: var(--text-sub);
+    font-size: 1.5rem;
+    cursor: pointer;
+    line-height: 1;
+    transition: color 0.15s ease;
+}
+
+.modal-close:hover {
+    color: #ffffff;
+}
+
+.modal-body {
+    padding: 20px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.modal-footer {
+    padding: 14px 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    background: rgba(15, 23, 42, 0.95);
+}
+
+/* Rate inputs in invoice */
+.rate-input {
+    width: 74px;
+    padding: 4px 6px;
+    font-size: 0.85rem;
+    border-radius: 6px;
+    background: rgba(30, 41, 59, 0.9);
+    border: 1px solid rgba(99, 102, 241, 0.45);
+    color: #ffffff;
+    text-align: right;
+    font-weight: 700;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.rate-input:focus {
+    border-color: #818cf8;
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.25);
+}
+
+/* Print Stylesheet for Clean Corporate Executive Invoices */
+@media print {
+    body * {
+        visibility: hidden !important;
+    }
+    #billing-report-modal, #billing-report-modal * {
+        visibility: visible !important;
+    }
+    #billing-report-modal {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        height: auto !important;
+        background: #ffffff !important;
+        color: #000000 !important;
+        backdrop-filter: none !important;
+    }
+    #billing-report-modal .modal-box {
+        max-width: 100% !important;
+        width: 100% !important;
+        border: none !important;
+        box-shadow: none !important;
+        background: #ffffff !important;
+        color: #000000 !important;
+        padding: 0 !important;
+    }
+    #billing-report-modal .modal-header,
+    #billing-report-modal .modal-footer,
+    #billing-report-modal button {
+        display: none !important;
+    }
+    #billing-invoice-printable-area {
+        background: #ffffff !important;
+        color: #000000 !important;
+        border: none !important;
+        padding: 0 !important;
+    }
+    #billing-invoice-printable-area * {
+        color: #000000 !important;
+        border-color: #e2e8f0 !important;
+        background: transparent !important;
+        -webkit-text-fill-color: #000000 !important;
+        box-shadow: none !important;
+    }
+    #billing-invoice-printable-area input.rate-input,
+    #billing-invoice-printable-area #inv-tax-rate-input {
+        border: none !important;
+        background: transparent !important;
+        color: #000000 !important;
+        padding: 0 !important;
+        width: auto !important;
+        font-weight: 700 !important;
+        -moz-appearance: textfield !important;
+    }
+    #billing-invoice-printable-area input::-webkit-outer-spin-button,
+    #billing-invoice-printable-area input::-webkit-inner-spin-button {
+        -webkit-appearance: none !important;
+        margin: 0 !important;
+    }
+}

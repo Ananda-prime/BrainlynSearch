@@ -1,0 +1,131 @@
+<mxfile host="app.diagrams.net" modified="2026-09-10T16:15:00.000Z" agent="Mozilla/5.0" version="21.0.0" type="device">
+  <diagram id="brainlyn-ecourts-live-sync" name="BrainlynSearch eCourts Live Sync Architecture">
+    <mxGraphModel dx="1422" dy="850" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" background="#ffffff">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="client_box" value="Client Layer (Frontend UI)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f8f9fa;strokeColor=#dee2e6;fontStyle=1;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="40" y="80" width="220" height="660" as="geometry" />
+        </mxCell>
+        <mxCell id="user_ui" value="User Dashboard Search Bar&lt;br&gt;(Petitioner / Respondent / All)&lt;br&gt;user_dashboard.js" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e3f2fd;strokeColor=#2196f3;fontStyle=1;" vertex="1" parent="client_box">
+          <mxGeometry x="20" y="70" width="180" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="ui_results" value="Instant Unified Results&lt;br&gt;(Local Hits + Live Hits with&lt;br&gt;Similarity and Confidence Score)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f5e9;strokeColor=#4caf50;fontStyle=1;" vertex="1" parent="client_box">
+          <mxGeometry x="20" y="490" width="180" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="backend_box" value="FastAPI Backend Core (es_migration_v2/api)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f8f9fa;strokeColor=#dee2e6;fontStyle=1;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="300" y="80" width="500" height="660" as="geometry" />
+        </mxCell>
+        <mxCell id="search_endpoint" value="POST /search Endpoint&lt;br&gt;(main.py)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff3e0;strokeColor=#ff9800;fontStyle=1;" vertex="1" parent="backend_box">
+          <mxGeometry x="30" y="70" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="es_query_worker" value="Local Elasticsearch Search&lt;br&gt;(Sub-30ms Query Engine)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff3e0;strokeColor=#ff9800;" vertex="1" parent="backend_box">
+          <mxGeometry x="280" y="70" width="190" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ecourts_gateway" value="eCourts Gateway Service&lt;br&gt;(ecourts_service.py)&lt;br&gt;- Dynamic 3-Endpoint Router&lt;br&gt;- 2.5s Circuit-Breaker Timeout&lt;br&gt;- 1-Hour Request Cache" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ede7f6;strokeColor=#673ab7;fontStyle=1;align=left;spacingLeft=10;" vertex="1" parent="backend_box">
+          <mxGeometry x="30" y="180" width="220" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="similarity_engine" value="75% to 100% Similarity Engine&lt;br&gt;(similarity_engine.py)&lt;br&gt;- Token Jaccard + Soundex&lt;br&gt;- Drops Records below 75%&lt;br&gt;- Normalizes 39 API Fields" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ede7f6;strokeColor=#673ab7;fontStyle=1;align=left;spacingLeft=10;" vertex="1" parent="backend_box">
+          <mxGeometry x="30" y="320" width="220" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="dedup_block" value="CNR Deduplication Unit&lt;br&gt;- Checks existing CNRs&lt;br&gt;- Retains Only Brand New Cases" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ede7f6;strokeColor=#673ab7;fontStyle=1;" vertex="1" parent="backend_box">
+          <mxGeometry x="30" y="450" width="220" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="bg_worker" value="Async Background Worker&lt;br&gt;(ingestion_worker.py)&lt;br&gt;- Non-Blocking Persistence&lt;br&gt;- Zero UI Latency Impact" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fce4ec;strokeColor=#e91e63;fontStyle=1;" vertex="1" parent="backend_box">
+          <mxGeometry x="280" y="450" width="190" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="merger" value="Result Merger and Sorter&lt;br&gt;(Ranks by Confidence Score)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f5e9;strokeColor=#4caf50;fontStyle=1;" vertex="1" parent="backend_box">
+          <mxGeometry x="30" y="550" width="220" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="external_box" value="External Partner API Layer" style="swimlane;whiteSpace=wrap;html=1;fillColor=#fffde7;strokeColor=#fbc02d;fontStyle=1;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="840" y="80" width="240" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="api_pet" value="1. Petitioner Search&lt;br&gt;?petitioners={query}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff9c4;strokeColor=#fbc02d;" vertex="1" parent="external_box">
+          <mxGeometry x="20" y="60" width="200" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="api_resp" value="2. Respondent Search&lt;br&gt;?respondents={query}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff9c4;strokeColor=#fbc02d;" vertex="1" parent="external_box">
+          <mxGeometry x="20" y="130" width="200" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="api_comm" value="3. Common Search&lt;br&gt;?query={query}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff9c4;strokeColor=#fbc02d;" vertex="1" parent="external_box">
+          <mxGeometry x="20" y="200" width="200" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="storage_box" value="Database and Elasticsearch Layer" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f8f9fa;strokeColor=#dee2e6;fontStyle=1;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="1120" y="80" width="240" height="660" as="geometry" />
+        </mxCell>
+        <mxCell id="es_indices" value="Elasticsearch Indices&lt;br&gt;INDEX_PATTERN:&lt;br&gt;- court_records&lt;br&gt;- high_court_records&lt;br&gt;- supreme_court_records&lt;br&gt;- ecourts_live_records (NEW)" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#fff3e0;strokeColor=#ff9800;fontStyle=1;align=left;spacingLeft=10;" vertex="1" parent="storage_box">
+          <mxGeometry x="20" y="60" width="200" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="pg_new_table" value="NEW PostgreSQL Table&lt;br&gt;lexisearch.ecourts_live_records&lt;br&gt;- Stores 100% of 39 Fields&lt;br&gt;- Advocates, Judges, Dates&lt;br&gt;- raw_payload JSONB" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#fce4ec;strokeColor=#e91e63;fontStyle=1;align=left;spacingLeft=10;" vertex="1" parent="storage_box">
+          <mxGeometry x="20" y="230" width="200" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="pg_hist_tables" value="Historical PostgreSQL Tables&lt;br&gt;(100% Untouched and Safe)&lt;br&gt;- lexisearch.court_records&lt;br&gt;- lexisearch.high_court_records&lt;br&gt;- lexisearch.supreme_court_records" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#e1f5fe;strokeColor=#03a9f4;fontStyle=1;align=left;spacingLeft=10;" vertex="1" parent="storage_box">
+          <mxGeometry x="20" y="410" width="200" height="130" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e1" value="1. Search Query" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#2196f3;" edge="1" parent="1" source="user_ui" target="search_endpoint">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="e2a" value="2a. Local Search" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#ff9800;" edge="1" parent="1" source="search_endpoint" target="es_query_worker">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2a_es" value="Multi-Index Match" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#ff9800;" edge="1" parent="1" source="es_query_worker" target="es_indices">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="750" y="170" />
+              <mxPoint x="1140" y="170" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="e2b" value="2b. Parallel Live Sync" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#673ab7;" edge="1" parent="1" source="search_endpoint" target="ecourts_gateway">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2b_api" value="HTTP GET (2.5s Timeout)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#673ab7;" edge="1" parent="1" source="ecourts_gateway" target="external_box">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e3" value="3. Raw 39-Field Cases" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#673ab7;" edge="1" parent="1" source="ecourts_gateway" target="similarity_engine">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="e4" value="4. Filtered (Score 75% to 100%)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#673ab7;" edge="1" parent="1" source="similarity_engine" target="dedup_block">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e5_bg" value="5. Enqueue New Cases" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#e91e63;" edge="1" parent="1" source="dedup_block" target="bg_worker">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5_pg" value="Async INSERT (39 Fields + JSONB)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#e91e63;" edge="1" parent="1" source="bg_worker" target="pg_new_table">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="880" y="570" />
+              <mxPoint x="880" y="380" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e5_es" value="Async Index Doc" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#e91e63;" edge="1" parent="1" source="bg_worker" target="es_indices">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="880" y="600" />
+              <mxPoint x="1100" y="600" />
+              <mxPoint x="1100" y="240" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="e6" value="Merge Hits" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#4caf50;" edge="1" parent="1" source="dedup_block" target="merger">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" value="6. Instant Deliver (under 150ms)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#4caf50;" edge="1" parent="1" source="merger" target="ui_results">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

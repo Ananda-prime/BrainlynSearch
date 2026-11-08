@@ -1,0 +1,1642 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brainlynsearch AI | Enterprise Analytics & Console</title>
+
+    <!-- Typography & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- External Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Modular CSS Stylesheets -->
+    <link rel="stylesheet" href="css/base.css?v=4">
+    <link rel="stylesheet" href="css/components.css?v=4">
+    <link rel="stylesheet" href="css/modals.css?v=4">
+    <link rel="stylesheet" href="css/user_dashboard.css?v=4">
+    <style>
+        /* ── Unified Legal Pillars Backdrop Across All Views ── */
+        html {
+            background-color: #070b14 !important;
+        }
+
+        body {
+            background-color: transparent !important;
+            font-family: 'Outfit', sans-serif;
+            position: relative !important;
+        }
+
+        body::before {
+            content: "" !important;
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            z-index: -1 !important;
+            background-image:
+                radial-gradient(ellipse at 85% 25%, rgba(7, 11, 20, 0.32) 0%, rgba(9, 13, 22, 0.72) 55%, rgba(7, 11, 20, 0.95) 100%),
+                radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.18) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(168, 85, 247, 0.14) 0px, transparent 50%),
+                url('/legal_bg.png') !important;
+            background-size: cover !important;
+            background-position: top right !important;
+            background-repeat: no-repeat !important;
+            pointer-events: none !important;
+            display: block !important;
+            opacity: 1 !important;
+        }
+
+        /* ── Sidebar Alignment Fixes for user_dashboard.html ── */
+
+        .sidebar-menu-item a,
+        .sidebar-menu-item .nav-item {
+            display: flex !important;
+            align-items: center !important;
+            gap: 12px !important;
+            padding: 10px 14px !important;
+            border-radius: 10px !important;
+            color: #94a3b8 !important;
+            text-decoration: none !important;
+            font-size: 0.88rem !important;
+            font-weight: 500 !important;
+            white-space: nowrap !important;
+            cursor: pointer !important;
+            transition: all 0.2s !important;
+        }
+
+        .sidebar-menu-item a:hover {
+            background: rgba(255, 255, 255, 0.04) !important;
+            color: #f1f5f9 !important;
+        }
+
+        .sidebar-menu-item.active a {
+            background: #18223c !important;
+            border: 1px solid rgba(99, 102, 241, 0.35) !important;
+            color: #a5b4fc !important;
+            font-weight: 600 !important;
+        }
+
+        .sidebar-menu-item svg {
+            width: 17px !important;
+            height: 17px !important;
+            flex-shrink: 0 !important;
+            display: block !important;
+        }
+
+        .sidebar {
+            top: 64px !important;
+            height: calc(100vh - 64px) !important;
+            width: 240px !important;
+        }
+
+        .dashboard-layout {
+            padding-top: 64px !important;
+        }
+
+        /* ── Global Top Navbar & Brand Styling (100% Identical to index.html) ── */
+        .top-navbar {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            height: 64px !important;
+            background: #080c14 !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            padding: 0 24px !important;
+            z-index: 1000 !important;
+            font-family: 'Outfit', sans-serif !important;
+        }
+
+        .top-nav-brand {
+            display: flex !important;
+            align-items: center !important;
+            gap: 11px !important;
+            text-decoration: none !important;
+            cursor: pointer !important;
+        }
+
+        .courthouse-logo-svg {
+            width: 30px !important;
+            height: 30px !important;
+            color: #f59e0b !important;
+            filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.4)) !important;
+            flex-shrink: 0 !important;
+            margin-top: -1px !important;
+        }
+
+        .brand-text-col {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 2px !important;
+            justify-content: center !important;
+        }
+
+        .brand-title {
+            font-size: 1.2rem !important;
+            font-weight: 800 !important;
+            color: #ffffff !important;
+            letter-spacing: -0.4px !important;
+            line-height: 1.15 !important;
+            font-family: 'Outfit', sans-serif !important;
+            display: block !important;
+            white-space: nowrap !important;
+        }
+
+        .brand-ai-gradient {
+            background: linear-gradient(135deg, #818cf8, #a855f7) !important;
+            -webkit-background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
+            font-weight: 800 !important;
+        }
+
+        .brand-sub {
+            font-size: 0.49rem !important;
+            color: #64748b !important;
+            font-weight: 600 !important;
+            letter-spacing: 0.45px !important;
+            text-transform: uppercase !important;
+            display: block !important;
+            white-space: nowrap !important;
+            line-height: 1 !important;
+        }
+
+        /* Sidebar toggle hover */
+        .sidebar-toggle-btn:hover {
+            background: #6366f1 !important;
+            color: #ffffff !important;
+            border-color: #818cf8 !important;
+            box-shadow: 0 0 12px rgba(99, 102, 241, 0.6) !important;
+            transform: scale(1.12) !important;
+        }
+
+        /* Collapsed sidebar support */
+        .sidebar.collapsed {
+            width: 68px !important;
+            padding: 16px 8px 14px !important;
+        }
+
+        .sidebar.collapsed .menu-text,
+        .sidebar.collapsed .trust-box-desc,
+        .sidebar.collapsed .trust-box-link,
+        .sidebar.collapsed .trust-box-title,
+        .sidebar.collapsed .sidebar-toggle-btn+div .sidebar-menu~div {
+            display: none !important;
+        }
+
+        .sidebar.collapsed .sidebar-menu-item a {
+            justify-content: center !important;
+            padding: 10px !important;
+        }
+
+        body.sidebar-collapsed .dashboard-main {
+            margin-left: 68px !important;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- ═══════════════════════════════════════════════════════════
+         FIXED TOP GLOBAL NAVIGATION BAR (matches index.html)
+         ═══════════════════════════════════════════════════════════ -->
+    <header class="top-navbar">
+        <a class="top-nav-brand" href="/" title="Brainlynsearch AI">
+            <svg class="courthouse-logo-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="12 2 2 7 22 7 12 2" fill="rgba(245, 158, 11, 0.15)"></polygon>
+                <line x1="4" y1="21" x2="20" y2="21" stroke-width="2.5"></line>
+                <line x1="6" y1="7" x2="6" y2="18" stroke-width="2"></line>
+                <line x1="10" y1="7" x2="10" y2="18" stroke-width="2"></line>
+                <line x1="14" y1="7" x2="14" y2="18" stroke-width="2"></line>
+                <line x1="18" y1="7" x2="18" y2="18" stroke-width="2"></line>
+                <line x1="2" y1="18" x2="22" y2="18" stroke-width="2"></line>
+            </svg>
+            <div class="brand-text-col">
+                <div class="brand-title">Brainlynsearch <span class="brand-ai-gradient">AI</span></div>
+                <div class="brand-sub">INSTITUTIONAL LEGAL INTELLIGENCE</div>
+            </div>
+        </a>
+
+        <!-- Page Title Center -->
+        <div style="position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:8px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#818cf8" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="20" x2="18" y2="10"></line>
+                <line x1="12" y1="20" x2="12" y2="4"></line>
+                <line x1="6" y1="20" x2="6" y2="14"></line>
+            </svg>
+            <span style="font-size:0.9rem;font-weight:600;color:#e2e8f0;letter-spacing:0.2px;"
+                id="navPageTitle">Analytics &amp; Console</span>
+        </div>
+
+        <!-- User Pill -->
+        <div style="display:flex;align-items:center;gap:14px;">
+            <button onclick="window.location.href='/'"
+                style="display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#94a3b8;padding:6px 12px;border-radius:8px;cursor:pointer;font-size:0.82rem;font-weight:500;transition:all 0.2s;"
+                title="Back to Search">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+                Back to Search
+            </button>
+            <div style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:4px 8px;border-radius:10px;">
+                <div id="topUserAvatar"
+                    style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#a855f7);color:#fff;font-weight:700;font-size:0.9rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                    -</div>
+                <div style="display:flex;flex-direction:column;text-align:left;">
+                    <span id="topUserName"
+                        style="font-size:0.86rem;font-weight:700;color:#f1f5f9;line-height:1.2;">Loading...</span>
+                    <span id="topUserRole" style="font-size:0.72rem;color:#94a3b8;">Enterprise User</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Initial Loading View -->
+    <div id="loading-view"
+        style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; gap: 16px; padding-top: 64px;">
+        <div class="spinner" style="width: 48px; height: 48px; border-width: 4px;"></div>
+        <p style="color: var(--text-sub); font-size: 1.05rem;">Loading enterprise usage &amp; analytics...</p>
+    </div>
+    <div class="dashboard-layout" id="dashboard-view" style="display: none; padding-top: 64px;">
+        <!-- Left Navigation Sidebar -->
+        <aside class="sidebar" style="top: 64px; height: calc(100vh - 64px); padding: 16px 12px 14px; width: 240px;">
+            <!-- Floating Sidebar Toggle Button -->
+            <button class="sidebar-toggle-btn" onclick="toggleSidebar()" title="Toggle Sidebar (Ctrl+B)"
+                style="position:absolute;top:6px;right:-13px;width:26px;height:26px;border-radius:50%;background:#1a2540;border:1px solid rgba(99,102,241,0.3);color:#94a3b8;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:105;box-shadow:0 2px 8px rgba(0,0,0,0.5);transition:all 0.25s;padding:0;">
+                <svg class="toggle-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+            </button>
+            <div>
+                <ul class="sidebar-menu" style="margin-top: 0; gap: 4px;">
+                    <li class="sidebar-menu-item" id="menu-search" data-tooltip="Interactive Search">
+                        <a href="/index.html">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                            <span class="menu-text">Interactive Search</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-menu-item" id="menu-screener" data-tooltip="Batch Screener">
+                        <a href="/index.html?tab=batch">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                            </svg>
+                            <span class="menu-text">Batch Screener</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-menu-item" id="menu-analytics" data-tooltip="Analytics">
+                        <a href="/user_dashboard.html" id="nav-item-analytics"
+                            onclick="event.preventDefault(); switchMainTab('analytics');">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="18" y1="20" x2="18" y2="10"></line>
+                                <line x1="12" y1="20" x2="12" y2="4"></line>
+                                <line x1="6" y1="20" x2="6" y2="14"></line>
+                            </svg>
+                            <span class="menu-text">Analytics</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-menu-item" id="menu-users" data-tooltip="User Management" style="display: none;">
+                        <a href="/user_dashboard.html?tab=users" id="nav-item-users"
+                            onclick="event.preventDefault(); switchMainTab('users');">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="9" cy="7" r="4"></circle>
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                            </svg>
+                            <span class="menu-text">User Management</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-menu-item" id="menu-developer" data-tooltip="API &amp; Developers">
+                        <a href="/index.html?tab=developer">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="16 18 22 12 16 6"></polyline>
+                                <polyline points="8 6 2 12 8 18"></polyline>
+                            </svg>
+                            <span class="menu-text">API &amp; Developers</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div>
+
+                <!-- Profile Mini -->
+                <div class="sidebar-profile" style="display: none;">
+                    <div class="profile-card">
+                        <div class="profile-avatar" id="profile-avatar-char">-</div>
+                        <div class="profile-info">
+                            <span class="profile-name" id="profile-name-val">Loading...</span>
+                            <span class="profile-role" id="profile-role-val">Super Admin</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="sidebar-logout-btn" onclick="handleLogout()" title="Logout">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                    <span class="logout-text">Logout</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="main-content">
+            <!-- Individual Header (Shown when user has only personal scope) -->
+            <div id="individual-header" class="workspace-header" style="display: none;">
+                <div class="workspace-header-info">
+                    <h1 class="workspace-title">Personal Intelligence & Analytics</h1>
+                    <p class="workspace-subtitle">Monitor judicial searches, high-risk screening, and legal audit
+                        history.</p>
+                </div>
+                <div class="workspace-header-actions">
+                    <span class="badge individual"
+                        style="font-size: 0.82rem; padding: 5px 12px; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 5px;"><svg
+                            width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                        </svg>INDIVIDUAL TIER</span>
+                    <a href="/index.html" class="action-btn primary-glow"
+                        style="padding: 7px 14px; font-size: 0.85rem;">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                        New Search
+                    </a>
+                </div>
+            </div>
+
+            <!-- Scope Switcher Tabs (Shown when user is Super Admin) -->
+            <div class="scope-tabs" id="scope-tabs-container" style="display: none;">
+                <div class="scope-tab active" id="tab-scope-user" onclick="switchScope('user')">My Usage</div>
+                <div class="scope-tab" id="tab-scope-admin" style="display: none;" onclick="switchScope('admin')">Super
+                    Admin Platform Console</div>
+            </div>
+
+            <!-- Top 4 KPI Metric Cards (Image 1 Experience) -->
+            <div class="metrics-grid">
+                <div class="metric-card" onclick="openAuditLogModal('searches')"
+                    title="Click to view interactive search audit trail" style="cursor: pointer;">
+                    <div class="metric-header">
+                        <span class="metric-title">TOTAL SEARCHES</span>
+                        <div class="metric-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="metric-value" id="stat-searches">0</div>
+                    <div class="metric-footer">
+                        <span>Click to inspect search audit trail</span>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="metric-card" onclick="openAuditLogModal('reports')"
+                    title="Click to view report export audit trail" style="cursor: pointer;">
+                    <div class="metric-header">
+                        <span class="metric-title">REPORTS GENERATED</span>
+                        <div class="metric-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="metric-value" id="stat-reports">0</div>
+                    <div class="metric-footer">
+                        <span>Click to inspect report audit trail</span>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="metric-card" onclick="openAuditLogModal('risk')"
+                    title="Click to view criminal litigation audit trail" style="cursor: pointer;">
+                    <div class="metric-header">
+                        <span class="metric-title">HIGH RISK (CRIMINAL)</span>
+                        <div class="metric-icon danger">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path
+                                    d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z">
+                                </path>
+                                <line x1="12" y1="9" x2="12" y2="13"></line>
+                                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="metric-value" id="stat-risk">0</div>
+                    <div class="metric-sub-pills">
+                        <span class="metric-sub-pill pending" title="Active criminal proceedings"><span
+                                class="dot"></span><span id="stat-risk-pending">0</span> Active</span>
+                        <span class="metric-sub-pill disposed" title="Closed or disposed criminal cases"><span
+                                class="dot"></span><span id="stat-risk-disposed">0</span> Closed</span>
+                    </div>
+                    <div class="metric-footer">
+                        <span>Click to inspect criminal audit trail</span>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="metric-card" onclick="openAuditLogModal('downloads')"
+                    title="Click to view download audit trail" style="cursor: pointer;">
+                    <div class="metric-header">
+                        <span class="metric-title">REPORTS DOWNLOADED</span>
+                        <div class="metric-icon success">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="metric-value" id="stat-downloads">0</div>
+                    <div class="metric-footer">
+                        <span>Click to inspect download audit trail</span>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="metric-card" onclick="openAuditLogModal('api')"
+                    title="Click to view REST API v1 audit trail" style="cursor: pointer;">
+                    <div class="metric-header">
+                        <span class="metric-title">PARTNER API INQUIRIES</span>
+                        <div class="metric-icon" style="background: rgba(14, 165, 233, 0.15); color: #38bdf8;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+                                <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+                                <line x1="6" y1="6" x2="6.01" y2="6"></line>
+                                <line x1="6" y1="18" x2="6.01" y2="18"></line>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="metric-value" id="stat-api-queries">0</div>
+                    <div class="metric-sub-pills">
+                        <span class="metric-sub-pill"
+                            style="background: rgba(14, 165, 233, 0.12); color: #38bdf8; border: 1px solid rgba(14, 165, 233, 0.25);"
+                            title="API Key Programmatic Queries"><span class="dot"
+                                style="background: #38bdf8;"></span><span id="stat-api-sub">REST v1</span></span>
+                    </div>
+                    <div class="metric-footer">
+                        <span>Click to inspect API audit trail</span>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Onboarding Quick Start Banner (Shown dynamically when total searches == 0) -->
+            <div id="onboarding-welcome-card" class="onboarding-card" style="display: none;">
+                <div class="onboarding-content">
+                    <span class="onboarding-badge" style="display: inline-flex; align-items: center; gap: 6px;"><svg
+                            width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z">
+                            </path>
+                            <path
+                                d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z">
+                            </path>
+                            <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"></path>
+                            <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"></path>
+                        </svg>QUICK START ONBOARDING</span>
+                    <h2 class="onboarding-title">Welcome to Brainlynsearch AI Platform</h2>
+                    <p class="onboarding-desc">
+                        Get started by searching Indian judicial records, tribunal litigation, and company compliance
+                        histories with high-precision AI semantic search.
+                    </p>
+                    <div class="onboarding-actions">
+                        <a href="/index.html" class="action-btn primary-glow">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                            Run Interactive Case Search
+                        </a>
+                        <a href="/index.html?tab=batch" class="action-btn secondary-glass">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                            </svg>
+                            Launch Batch Screener
+                        </a>
+                    </div>
+                </div>
+                <div class="onboarding-features">
+                    <div class="feature-item">
+                        <div class="feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                            </svg></div>
+                        <div>
+                            <div class="feature-title">100M+ Judicial Records</div>
+                            <div class="feature-sub">Supreme Court, High Courts, NCLT & DRT</div>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                            </svg></div>
+                        <div>
+                            <div class="feature-title">Automated Risk Profiling</div>
+                            <div class="feature-sub">Instant High, Medium & Low risk indicators</div>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                            </svg></div>
+                        <div>
+                            <div class="feature-title">Audit-Grade Reports</div>
+                            <div class="feature-sub">One-click compliance PDF & CSV ledger export</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Visual Analytics Command Center (Production-Grade 2x2 Suite) -->
+            <section id="analytics-charts-section" style="display: none;">
+                <div class="charts-grid">
+                    <!-- Widget 1: Search Velocity & Volume -->
+                    <div class="chart-card">
+                        <div class="chart-card-header">
+                            <div class="chart-title-wrap">
+                                <div class="chart-title">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#818cf8"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                                    </svg>
+                                    <span>Search Activity Velocity</span>
+                                </div>
+                                <div class="chart-subtitle" id="vol-chart-summary">Tracking temporal screening
+                                    throughput & peak dates</div>
+                            </div>
+                            <div class="chart-range-pills" id="vol-range-pills">
+                                <button class="range-pill active" onclick="setVolumeChartRange(7, this)">7D</button>
+                                <button class="range-pill" onclick="setVolumeChartRange(14, this)">14D</button>
+                                <button class="range-pill" onclick="setVolumeChartRange(30, this)">30D</button>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="chart-volume"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Widget 2: Litigation Risk & Adverse Findings -->
+                    <div class="chart-card">
+                        <div class="chart-card-header">
+                            <div class="chart-title-wrap">
+                                <div class="chart-title">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ef4444"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path>
+                                        <path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path>
+                                        <path d="M7 21h10"></path>
+                                        <path d="M12 3v18"></path>
+                                        <path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"></path>
+                                    </svg>
+                                    <span>Litigation Risk Progression</span>
+                                </div>
+                                <div class="chart-subtitle" id="risk-chart-summary">Adverse criminal proceedings vs
+                                    cleared civil records</div>
+                            </div>
+                            <div class="chart-range-pills" id="risk-range-pills">
+                                <button class="range-pill" onclick="setRiskChartRange(7, this)">7D</button>
+                                <button class="range-pill active" onclick="setRiskChartRange(14, this)">14D</button>
+                                <button class="range-pill" onclick="setRiskChartRange(30, this)">30D</button>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 12px; flex-wrap: wrap;"
+                            id="risk-chart-pills">
+                            <span
+                                style="font-size: 0.75rem; padding: 3px 9px; border-radius: 6px; background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); font-weight: 600;"
+                                id="risk-pill-high">0 Criminal (High Risk)</span>
+                            <span
+                                style="font-size: 0.75rem; padding: 3px 9px; border-radius: 6px; background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); font-weight: 600;"
+                                id="risk-pill-low">0 Civil (Clear)</span>
+                            <span
+                                style="font-size: 0.72rem; color: #94a3b8; background: rgba(255, 255, 255, 0.05); padding: 3px 8px; border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.08); margin-left: auto;"
+                                id="risk-pill-ratio">50% High Risk</span>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="chart-risk"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Widget 3: Query Channel & Screener Mix -->
+                    <div class="chart-card">
+                        <div class="chart-card-header">
+                            <div class="chart-title-wrap">
+                                <div class="chart-title">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#a78bfa"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <path d="M12 2a10 10 0 0 1 10 10h-10z"></path>
+                                    </svg>
+                                    <span>Query Channel & Screener Mix</span>
+                                </div>
+                                <div class="chart-subtitle">Real-time breakdown of single searches vs bulk Excel runs
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chart-container"
+                            style="display: flex; align-items: center; justify-content: center;">
+                            <canvas id="chart-cases"></canvas>
+                            <div class="donut-center-kpi" id="donut-center-overlay">
+                                <div class="donut-kpi-val" id="donut-kpi-val">0</div>
+                                <div class="donut-kpi-lbl">TOTAL QUERIES</div>
+                            </div>
+                        </div>
+                        <div class="chart-legend-row" id="cases-legend-row">
+                            <div class="chart-legend-item">
+                                <span class="chart-legend-dot" style="background: #6366f1;"></span>
+                                <span>Interactive Search:</span>
+                                <span class="chart-legend-val" id="legend-val-interactive">0</span>
+                            </div>
+                            <div class="chart-legend-item">
+                                <span class="chart-legend-dot" style="background: #a78bfa;"></span>
+                                <span>Batch Screener:</span>
+                                <span class="chart-legend-val" id="legend-val-batch">0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Widget 4: Top Jurisdictions & Geographic Diligence -->
+                    <div class="chart-card">
+                        <div class="chart-card-header">
+                            <div class="chart-title-wrap">
+                                <div class="chart-title">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#34d399"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="2" y1="22" x2="22" y2="22"></line>
+                                        <line x1="6" y1="18" x2="6" y2="11"></line>
+                                        <line x1="10" y1="18" x2="10" y2="11"></line>
+                                        <line x1="14" y1="18" x2="14" y2="11"></line>
+                                        <line x1="18" y1="18" x2="18" y2="11"></line>
+                                        <polygon points="12 2 2 7 22 7"></polygon>
+                                    </svg>
+                                    <span>Top Jurisdictions & Geographical Exposure</span>
+                                </div>
+                                <div class="chart-subtitle">State tribunals and High Court litigation concentrations
+                                </div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 6px;" id="states-header-badges">
+                                <span
+                                    style="font-size: 0.72rem; color: #a78bfa; background: rgba(167, 139, 250, 0.12); padding: 3px 9px; border-radius: 6px; border: 1px solid rgba(167, 139, 250, 0.25); font-weight: 600;"
+                                    id="states-total-count">0 States</span>
+                                <span
+                                    style="font-size: 0.72rem; color: #94a3b8; background: rgba(255,255,255,0.05); padding: 3px 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.08);"
+                                    id="states-inquiries-count">0 Inquiries</span>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="chart-states"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Widget 5: Case Disposition & Trial Lifecycle Strip -->
+                <div class="disposition-strip-card" id="disposition-strip-card">
+                    <div class="disposition-header">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f59e0b"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                            <span style="font-size: 0.88rem; font-weight: 700; color: #f8fafc;">Litigation Resolution &
+                                Case Disposition Lifecycle</span>
+                        </div>
+                        <div style="display: flex; gap: 14px; font-size: 0.78rem;">
+                            <span style="display: flex; align-items: center; gap: 5px; color: #fbbf24;">
+                                <span
+                                    style="width: 8px; height: 8px; border-radius: 50%; background: #fbbf24; display: inline-block;"></span>
+                                <strong id="disp-pct-pending">0%</strong> Active / Pending
+                            </span>
+                            <span style="display: flex; align-items: center; gap: 5px; color: #34d399;">
+                                <span
+                                    style="width: 8px; height: 8px; border-radius: 50%; background: #34d399; display: inline-block;"></span>
+                                <strong id="disp-pct-disposed">0%</strong> Concluded / Disposed
+                            </span>
+                        </div>
+                    </div>
+                    <div class="disposition-bar-wrap" title="Litigation Disposition Split">
+                        <div class="disposition-bar-pending" id="disp-bar-pending" style="width: 50%;"></div>
+                        <div class="disposition-bar-disposed" id="disp-bar-disposed" style="width: 50%;"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Org Members Table Card (Shown on Org Scope) -->
+            <div class="data-table-container" id="org-members-card" style="display: none;">
+                <div class="table-header-bar">
+                    <div class="table-title">Organization Team Members</div>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Searches</th>
+                                <th>Joined</th>
+                            </tr>
+                        </thead>
+                        <tbody id="org-members-tbody">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Super Admin Console (Shown on Super Admin Scope) -->
+            <div class="data-table-container" id="admin-console-card" style="display: none;">
+                <div class="table-header-bar">
+                    <div>
+                        <div class="table-title">Platform User Directory & Administration</div>
+                        <div style="font-size: 0.8rem; color: var(--text-sub); margin-top: 2px;">
+                            View full user details, provision organizations & org admins, and administer SaaS accounts
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <button class="action-btn" id="btn-toggle-all-orgs" onclick="toggleAllOrgsCollapse()">Collapse
+                            All Orgs</button>
+                        <button class="action-btn success" onclick="openAuditLogModal('searches', false)"
+                            style="display: inline-flex; align-items: center; gap: 6px;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="18" y1="20" x2="18" y2="10"></line>
+                                <line x1="12" y1="20" x2="12" y2="4"></line>
+                                <line x1="6" y1="20" x2="6" y2="14"></line>
+                            </svg>
+                            <span>System Audit Trail</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Admin Search & Filter Bar -->
+                <div
+                    style="padding: 16px 20px; background: rgba(0,0,0,0.2); border-bottom: 1px solid var(--border); display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
+                    <input type="text" id="search-users" class="form-input"
+                        placeholder="Search by name, email, or domain..." oninput="filterUsersUI()"
+                        style="flex: 2; min-width: 200px;">
+                    <select id="filter-org" class="form-input" onchange="filterUsersUI()"
+                        style="flex: 1; min-width: 160px;">
+                        <option value="all">All Organizations / Domains</option>
+                    </select>
+                    <select id="filter-role" class="form-input" onchange="filterUsersUI()"
+                        style="flex: 1; min-width: 120px;">
+                        <option value="all">All Roles</option>
+                        <option value="super_admin">Super Admin</option>
+                        <option value="org_admin">Org Admin</option>
+                        <option value="org_user">Org Member</option>
+                        <option value="individual">Individual</option>
+                    </select>
+                    <select id="filter-subscription" class="form-input" onchange="filterUsersUI()"
+                        style="flex: 1; min-width: 140px;">
+                        <option value="all">All Subscriptions</option>
+                        <option value="purchased">Purchased / Subscribed</option>
+                        <option value="unpurchased">Unpurchased / Free</option>
+                    </select>
+                    <select id="filter-status" class="form-input" onchange="filterUsersUI()"
+                        style="flex: 1; min-width: 120px;">
+                        <option value="all">All Statuses</option>
+                        <option value="approved">Approved</option>
+                        <option value="pending">Pending</option>
+                    </select>
+                </div>
+
+                <!-- Admin Users Table -->
+                <div style="overflow-x: auto;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>User</th>
+                                <th>Role</th>
+                                <th>Organization / Domain</th>
+                                <th id="th-subscription">Subscription</th>
+                                <th>Searches</th>
+                                <th>Reports</th>
+                                <th>Status</th>
+                                <th>Joined Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-users-tbody">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         MODALS
+         ═══════════════════════════════════════════════════════════════ -->
+
+    <!-- Edit Role Modal -->
+    <div class="modal-overlay" id="role-modal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <span class="modal-title">Modify User Role & Organization</span>
+                <button class="modal-close" onclick="closeRoleModal()">&times;</button>
+            </div>
+            <div class="modal-body" style="display: flex; flex-direction: column; gap: 14px;">
+                <div>
+                    <label style="font-size: 0.8rem; color: var(--text-sub); display: block; margin-bottom: 4px;">User
+                        Email</label>
+                    <div id="modal-user-email" style="font-weight: 600; color: var(--text-main); font-size: 0.95rem;">
+                    </div>
+                </div>
+                <div>
+                    <label for="modal-role-select"
+                        style="font-size: 0.8rem; color: var(--text-sub); display: block; margin-bottom: 4px;">Assigned
+                        Role</label>
+                    <select id="modal-role-select" class="form-input">
+                        <option value="individual">Individual</option>
+                        <option value="org_user">Organization Member</option>
+                        <option value="org_admin">Organization Admin</option>
+                        <option value="super_admin">Super Admin</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="modal-subscription-select"
+                        style="font-size: 0.8rem; color: var(--text-sub); display: block; margin-bottom: 4px;">Subscription
+                        / Access Status</label>
+                    <select id="modal-subscription-select" class="form-input">
+                        <option value="purchased">Purchased / Subscribed (100% Unrestricted)</option>
+                        <option value="unpurchased">Unpurchased / Free (Top 10 Capped)</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="modal-org-name"
+                        style="font-size: 0.8rem; color: var(--text-sub); display: block; margin-bottom: 4px;">Organization
+                        Name</label>
+                    <input type="text" id="modal-org-name" class="form-input" placeholder="e.g. Acme Legal LLP">
+                </div>
+                <div>
+                    <label for="modal-org-domain"
+                        style="font-size: 0.8rem; color: var(--text-sub); display: block; margin-bottom: 4px;">Organization
+                        Domain (Optional)</label>
+                    <input type="text" id="modal-org-domain" class="form-input" placeholder="e.g. acmelegal.com">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="action-btn" onclick="closeRoleModal()">Cancel</button>
+                <button class="action-btn success" onclick="submitRoleUpdate()">Save Role</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay" id="delete-modal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <span class="modal-title" style="color: var(--error-red);">Confirm Account Deletion</span>
+                <button class="modal-close" onclick="closeDeleteModal()">&times;</button>
+            </div>
+            <div class="modal-body" style="display: flex; flex-direction: column; gap: 12px;">
+                <p style="color: var(--text-main); font-size: 0.95rem;">
+                    Are you sure you want to permanently delete user <strong id="modal-delete-user-email"></strong>?
+                </p>
+                <p
+                    style="color: var(--error-red); font-size: 0.8rem; background: rgba(239, 68, 68, 0.1); padding: 10px; border-radius: 6px; border: 1px solid rgba(239, 68, 68, 0.25); display: flex; align-items: center; gap: 8px;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
+                        <path
+                            d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z">
+                        </path>
+                        <line x1="12" y1="9" x2="12" y2="13"></line>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                    <span><strong>Warning:</strong> This will permanently remove the user and purge their associated
+                        query logs.</span>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="action-btn" onclick="closeDeleteModal()">Cancel</button>
+                <button class="action-btn danger" onclick="submitDeleteUser()">Permanently Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dedicated Individual User Usage & Performance Analytics Modal (Image 1 Experience) -->
+    <div class="modal-overlay" id="user-analytics-modal">
+        <div class="modal-box"
+            style="max-width: 1080px; width: 95%; max-height: 92vh; display: flex; flex-direction: column; background: #0f172a; border: 1px solid rgba(255, 255, 255, 0.18); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);">
+            <div class="modal-header"
+                style="border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 14px; display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                    <div id="u-modal-avatar"
+                        style="width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #6366f1, #a855f7); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.05rem;">
+                        U
+                    </div>
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span class="modal-title" id="u-modal-name"
+                                style="color: #f8fafc; font-size: 1.15rem; font-weight: 700;">User Analytics
+                                Dashboard</span>
+                            <span id="u-modal-role-badge" class="badge individual">Individual</span>
+                            <span id="u-modal-status-badge" class="badge approved">Approved</span>
+                        </div>
+                        <div style="font-size: 0.8rem; color: var(--text-sub); margin-top: 2px;" id="u-modal-email-org">
+                            user@example.com &bull; Individual Account
+                        </div>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <button class="action-btn" onclick="openUserAuditLogsFromAnalytics()"
+                        style="background: rgba(99, 102, 241, 0.15); border-color: rgba(99, 102, 241, 0.3); color: #a5b4fc; font-weight: 600; padding: 6px 12px; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 6px;">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                        <span>Raw Audit Logs</span>
+                    </button>
+                    <button class="action-btn" onclick="openUserBillingFromAnalytics()"
+                        style="background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.3); color: #34d399; font-weight: 600; padding: 6px 12px; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 6px;">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                        </svg>
+                        <span>Billing Statement</span>
+                    </button>
+                    <button class="modal-close" onclick="closeUserAnalyticsModal()">&times;</button>
+                </div>
+            </div>
+
+            <div class="modal-body"
+                style="flex: 1; overflow-y: auto; padding: 20px; background: rgba(15, 23, 42, 0.95);">
+                <!-- User 4 Metric Cards -->
+                <div class="metrics-grid" style="margin-bottom: 24px;">
+                    <div class="metric-card" onclick="openUserAuditLogsFromAnalytics('searches')"
+                        title="Click to view search logs" style="cursor: pointer;">
+                        <div class="metric-header">
+                            <span class="metric-title">TOTAL SEARCHES</span>
+                            <div class="metric-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="metric-value" id="u-stat-searches">0</div>
+                        <div class="metric-footer">
+                            <span>Click to inspect search audit trail</span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="metric-card" onclick="openUserAuditLogsFromAnalytics('reports')"
+                        title="Click to view reports" style="cursor: pointer;">
+                        <div class="metric-header">
+                            <span class="metric-title">REPORTS GENERATED</span>
+                            <div class="metric-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="metric-value" id="u-stat-reports">0</div>
+                        <div class="metric-footer">
+                            <span>Click to inspect report audit trail</span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="metric-card" onclick="openUserAuditLogsFromAnalytics('risk')"
+                        title="Click to view criminal litigation audit trail" style="cursor: pointer;">
+                        <div class="metric-header">
+                            <span class="metric-title">HIGH RISK (CRIMINAL)</span>
+                            <div class="metric-icon danger">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path
+                                        d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z">
+                                    </path>
+                                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="metric-value" id="u-stat-risk">0</div>
+                        <div class="metric-sub-pills">
+                            <span class="metric-sub-pill pending" title="Active criminal proceedings"><span
+                                    class="dot"></span><span id="u-stat-risk-pending">0</span> Active</span>
+                            <span class="metric-sub-pill disposed" title="Closed or disposed criminal cases"><span
+                                    class="dot"></span><span id="u-stat-risk-disposed">0</span> Closed</span>
+                        </div>
+                        <div class="metric-footer">
+                            <span>Click to inspect criminal audit trail</span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="metric-card" onclick="openUserAuditLogsFromAnalytics('downloads')"
+                        title="Click to view downloads" style="cursor: pointer;">
+                        <div class="metric-header">
+                            <span class="metric-title">REPORTS DOWNLOADED</span>
+                            <div class="metric-icon success">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                    <polyline points="7 10 12 15 17 10"></polyline>
+                                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="metric-value" id="u-stat-downloads">0</div>
+                        <div class="metric-footer">
+                            <span>Click to inspect download audit trail</span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="metric-card" onclick="openUserAuditLogsFromAnalytics('api')"
+                        title="Click to view REST API v1 queries" style="cursor: pointer;">
+                        <div class="metric-header">
+                            <span class="metric-title">PARTNER API INQUIRIES</span>
+                            <div class="metric-icon" style="background: rgba(14, 165, 233, 0.15); color: #38bdf8;">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+                                    <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+                                    <line x1="6" y1="6" x2="6.01" y2="6"></line>
+                                    <line x1="6" y1="18" x2="6.01" y2="18"></line>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="metric-value" id="u-stat-api">0</div>
+                        <div class="metric-sub-pills">
+                            <span class="metric-sub-pill"
+                                style="background: rgba(14, 165, 233, 0.12); color: #38bdf8; border: 1px solid rgba(14, 165, 233, 0.25);"
+                                title="API Key Programmatic Queries"><span class="dot"
+                                    style="background: #38bdf8;"></span><span id="u-stat-api-sub">REST v1</span></span>
+                        </div>
+                        <div class="metric-footer">
+                            <span>Click to inspect API audit trail</span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User Charts -->
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <div class="chart-title">User Search Activity Volume (Last 30 Days)</div>
+                        <div class="chart-container">
+                            <canvas id="user-chart-volume"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <div class="chart-title">User Query Type Distribution</div>
+                        <div class="chart-container">
+                            <canvas id="user-chart-cases"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <div class="chart-title">User Litigation Risk Progression (Criminal vs Civil)</div>
+                        <div class="chart-container">
+                            <canvas id="user-chart-risk"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <div class="chart-title">Top Searched Jurisdictions / States</div>
+                        <div class="chart-container">
+                            <canvas id="user-chart-states"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer"
+                style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 14px; flex-wrap: wrap; gap: 10px;">
+                <div style="font-size: 0.8rem; color: var(--text-sub);">
+                    Interactive metrics & search trends for targeted user account.
+                </div>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button class="action-btn" onclick="openUserAuditLogsFromAnalytics()"
+                        style="display: inline-flex; align-items: center; gap: 6px;">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                        <span>Inspect Query Logs</span>
+                    </button>
+                    <button class="action-btn success" onclick="openUserBillingFromAnalytics()"
+                        style="display: inline-flex; align-items: center; gap: 6px;">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                        </svg>
+                        <span>Open Billing Statement</span>
+                    </button>
+                    <button class="action-btn" onclick="closeUserAnalyticsModal()">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Production-Grade Executive SaaS Billing Report & Invoice Modal -->
+    <div class="modal-overlay" id="billing-report-modal">
+        <div class="modal-box"
+            style="max-width: 960px; width: 95%; max-height: 92vh; display: flex; flex-direction: column; background: #0f172a; border: 1px solid rgba(255, 255, 255, 0.18); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);">
+            <!-- Modal Header -->
+            <div class="modal-header"
+                style="border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 14px; display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                    <span class="modal-title"
+                        style="color: #818cf8; font-size: 1.15rem; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                        Executive SaaS Billing & Reconciliation Statement
+                    </span>
+                    <span id="billing-invoice-status-badge" class="badge approved">RECONCILED / AUDITED</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <label for="billing-cycle-select"
+                            style="font-size: 0.78rem; color: var(--text-sub); font-weight: 500;">Period:</label>
+                        <select id="billing-cycle-select" class="form-input" onchange="onBillingCycleChange(this.value)"
+                            style="padding: 4px 10px; font-size: 0.8rem; background: rgba(30, 41, 59, 0.9); border: 1px solid rgba(255,255,255,0.15); color: #fff; border-radius: 6px; cursor: pointer;">
+                            <option value="all">All Time</option>
+                        </select>
+                    </div>
+                    <button class="modal-close" onclick="closeBillingReportModal()">&times;</button>
+                </div>
+            </div>
+
+            <!-- Modal Printable Area -->
+            <div class="modal-body" id="billing-invoice-printable-area"
+                style="flex: 1; overflow-y: auto; padding: 24px; background: rgba(15, 23, 42, 0.98);">
+                <!-- Invoice Header Details -->
+                <div
+                    style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid rgba(255,255,255,0.1); padding-bottom: 20px; margin-bottom: 22px; flex-wrap: wrap; gap: 16px;">
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                            <span
+                                style="font-size: 1.4rem; font-weight: 800; color: #f8fafc; letter-spacing: -0.5px;">BRAINLYN</span>
+                            <span
+                                style="font-size: 0.85rem; font-weight: 700; color: #818cf8; background: rgba(99,102,241,0.15); padding: 2px 8px; border-radius: 6px; border: 1px solid rgba(99,102,241,0.3);">ENTERPRISE
+                                SAAS</span>
+                        </div>
+                        <div style="font-size: 0.8rem; color: var(--text-sub);" id="inv-issuer-company">Brainlyn AI
+                            Search Platform</div>
+                        <div style="font-size: 0.78rem; color: var(--text-muted);" id="inv-issuer-dept">Enterprise
+                            Billing Operations</div>
+                        <div style="font-size: 0.78rem; color: var(--text-muted);" id="inv-issuer-email">
+                            billing@brainlyn.com</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 1.15rem; font-weight: 800; color: #818cf8; letter-spacing: 0.5px;"
+                            id="inv-number">INV-202608-0001</div>
+                        <div style="font-size: 0.8rem; color: var(--text-sub);" id="inv-date-gen">Date: 2026-08-31</div>
+                        <div style="font-size: 0.8rem; color: #34d399; font-weight: 600;" id="inv-month-lbl">Billed
+                            Period: All Time</div>
+                        <div style="font-size: 0.76rem; color: var(--text-muted); margin-top: 2px;">Currency: USD ($)
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Billed Client Card -->
+                <div
+                    style="display: flex; justify-content: space-between; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 16px; margin-bottom: 22px; flex-wrap: wrap; gap: 16px;">
+                    <div>
+                        <div
+                            style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">
+                            BILLED TO</div>
+                        <div style="font-size: 1.05rem; font-weight: 700; color: #f8fafc;" id="inv-billed-org">Target
+                            Organization</div>
+                        <div style="font-size: 0.82rem; color: var(--text-sub);" id="inv-billed-domain">Domain:
+                            company.com</div>
+                        <div style="font-size: 0.8rem; color: var(--text-muted);" id="inv-billed-admin">Contact:
+                            admin@company.com</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div
+                            style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">
+                            ACCOUNT / TENANT METRICS</div>
+                        <div style="font-size: 0.85rem; font-weight: 600; color: #a5b4fc;" id="inv-billed-tenant">Tenant
+                            ID: TNT-XXXX</div>
+                        <div style="font-size: 0.8rem; color: var(--text-sub);">Payment Term: Net 30 (Enterprise
+                            Invoicing)</div>
+                        <div style="font-size: 0.8rem; color: #34d399;">Billing Status: Verified Active</div>
+                    </div>
+                </div>
+
+                <!-- Usage Rate Card Table -->
+                <div style="margin-bottom: 22px;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px;">
+                        <div
+                            style="font-size: 0.82rem; font-weight: 700; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.6px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                            <span>USAGE RATE CARD & CHARGES BREAKDOWN</span>
+                            <span
+                                style="background: rgba(99, 102, 241, 0.15); border: 1px solid rgba(99, 102, 241, 0.35); color: #a5b4fc; font-size: 0.72rem; padding: 2px 8px; border-radius: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;">
+                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 20h9"></path>
+                                    <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                                </svg>
+                                <span>Platform Admin Unit Rates (Live Editable)</span>
+                            </span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <button class="action-btn" onclick="resetDefaultBillingRates()"
+                                style="padding: 3px 9px; font-size: 0.74rem; display: inline-flex; align-items: center; gap: 4px;"
+                                title="Reset rates to platform defaults">
+                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M23 4v6h-6"></path>
+                                    <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                                </svg>
+                                <span>Reset Defaults</span>
+                            </button>
+                            <span style="font-size: 0.75rem; color: var(--text-sub);">Currency: USD ($)</span>
+                        </div>
+                    </div>
+                    <div
+                        style="overflow-x: auto; border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; background: rgba(0,0,0,0.2);">
+                        <table style="width: 100%; border-collapse: collapse; font-size: 0.88rem;">
+                            <thead>
+                                <tr
+                                    style="background: rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.1); text-align: left;">
+                                    <th style="padding: 12px 16px; font-weight: 600;">Service Activity Description</th>
+                                    <th style="padding: 12px 16px; font-weight: 600; text-align: center;">Audited Volume
+                                    </th>
+                                    <th
+                                        style="padding: 12px 16px; font-weight: 600; text-align: right; min-width: 170px;">
+                                        Unit Rate ($)</th>
+                                    <th style="padding: 12px 16px; font-weight: 600; text-align: right;">Total Amount
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id="inv-line-items-body">
+                                <tr>
+                                    <td colspan="4" style="text-align: center; color: var(--text-sub); padding: 24px;">
+                                        Computing billing rate cards and auditing search queries...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Financial Totals Box -->
+                <div
+                    style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px; margin-bottom: 22px;">
+                    <div
+                        style="flex: 1; min-width: 260px; font-size: 0.8rem; color: var(--text-sub); background: rgba(255,255,255,0.02); padding: 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+                        <div style="font-weight: 600; color: var(--text-main); margin-bottom: 4px;">Auditing &
+                            Compliance Guarantee</div>
+                        <div>Every billable transaction is immutably recorded in the platform audit log with sub-second
+                            timestamping. All queries comply with enterprise security standards.</div>
+                    </div>
+                    <div
+                        style="width: 320px; background: rgba(0,0,0,0.35); border: 1px solid rgba(255,255,255,0.12); border-radius: 10px; padding: 16px;">
+                        <div
+                            style="display: flex; justify-content: space-between; font-size: 0.88rem; color: var(--text-sub); margin-bottom: 6px;">
+                            <span>SUB-TOTAL:</span>
+                            <strong style="color: var(--text-main);" id="inv-subtotal">$0.00</strong>
+                        </div>
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; font-size: 0.88rem; color: var(--text-sub); margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px dashed rgba(255,255,255,0.12);">
+                            <span style="display: flex; align-items: center; gap: 4px;">
+                                TAX (<input type="number" step="0.5" min="0" max="100" id="inv-tax-rate-input" value="8"
+                                    oninput="updateTaxRate(this.value)"
+                                    style="width: 48px; padding: 2px 4px; font-size: 0.8rem; border-radius: 4px; background: rgba(30,41,59,0.9); border: 1px solid rgba(99,102,241,0.4); color: #34d399; text-align: center; font-weight: 700;">%):
+                            </span>
+                            <strong style="color: var(--text-main);" id="inv-tax">$0.00</strong>
+                        </div>
+                        <div
+                            style="display: flex; justify-content: space-between; font-size: 1.18rem; font-weight: 800; color: #34d399;">
+                            <span>TOTAL CHARGE:</span>
+                            <span id="inv-total">$0.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Collapsible Audit Records Table -->
+                <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 16px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none;"
+                        onclick="toggleBillingAuditLogsView()">
+                        <div
+                            style="font-size: 0.85rem; font-weight: 700; color: #818cf8; display: flex; align-items: center; gap: 8px;">
+                            <span id="billing-audit-chevron">▶</span>
+                            <span>Itemized Audited Query Logs (<span id="billing-audit-log-count">0</span>
+                                records)</span>
+                        </div>
+                        <span style="font-size: 0.76rem; color: var(--text-sub);">Click to inspect transaction
+                            records</span>
+                    </div>
+
+                    <div id="billing-audit-logs-container" style="display: none; margin-top: 14px;">
+                        <div style="margin-bottom: 10px;">
+                            <input type="text" id="billing-audit-search-input" class="form-input"
+                                placeholder="Search audited transactions by user email, query, or risk..."
+                                oninput="filterBillingAuditLogs(this.value)"
+                                style="font-size: 0.82rem; padding: 7px 12px;">
+                        </div>
+                        <div
+                            style="overflow-x: auto; max-height: 240px; border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; background: rgba(0,0,0,0.3);">
+                            <table style="width: 100%; border-collapse: collapse; font-size: 0.8rem;">
+                                <thead>
+                                    <tr
+                                        style="background: rgba(255,255,255,0.04); border-bottom: 1px solid rgba(255,255,255,0.08); text-align: left;">
+                                        <th style="padding: 8px 12px; color: var(--text-sub);">Timestamp</th>
+                                        <th style="padding: 8px 12px; color: var(--text-sub);">User</th>
+                                        <th style="padding: 8px 12px; color: var(--text-sub);">Action</th>
+                                        <th style="padding: 8px 12px; color: var(--text-sub);">Query</th>
+                                        <th style="padding: 8px 12px; color: var(--text-sub); text-align: center;">Risk
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="billing-audit-logs-tbody">
+                                    <!-- Populated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Action Footer -->
+            <div class="modal-footer"
+                style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255, 255, 255, 0.1); padding: 14px 20px;">
+                <div style="font-size: 0.78rem; color: var(--text-sub);">
+                    Executive SaaS Billing • Automated Ledger Reconciliation
+                </div>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <button class="action-btn" onclick="exportInvoiceCSV()"
+                        style="background: rgba(99, 102, 241, 0.15); border-color: rgba(99, 102, 241, 0.3); color: #a5b4fc; font-weight: 600; padding: 7px 14px;">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        Export CSV
+                    </button>
+                    <button class="action-btn" onclick="printInvoiceReport()"
+                        style="background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.2); font-weight: 600; padding: 7px 14px;">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                            <rect x="6" y="14" width="12" height="8"></rect>
+                        </svg>
+                        Print Invoice
+                    </button>
+                    <button class="action-btn success" onclick="downloadInvoicePDF()"
+                        style="font-weight: 600; padding: 7px 16px;">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        Download PDF
+                    </button>
+                    <button class="action-btn" onclick="closeBillingReportModal()"
+                        style="padding: 7px 16px;">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Production-Grade Itemized SaaS Audit Log Modal -->
+    <div class="modal-overlay" id="audit-log-modal">
+        <div class="modal-box"
+            style="max-width: 1040px; width: 95%; max-height: 90vh; display: flex; flex-direction: column; background: #0f172a; border: 1px solid rgba(255, 255, 255, 0.15); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);">
+            <div class="modal-header" style="border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 14px;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span class="modal-title" id="audit-modal-title"
+                                style="color: #f8fafc; font-size: 1.15rem; font-weight: 700;">Itemized SaaS Audit
+                                Trail</span>
+                            <span id="audit-modal-scope-badge" class="badge super_admin">Super Admin Scope</span>
+                        </div>
+                        <div id="audit-modal-subtitle"
+                            style="font-size: 0.8rem; color: var(--text-sub); margin-top: 2px;">
+                            Detailed query logs with immutable timestamps
+                        </div>
+                    </div>
+                </div>
+                <button class="modal-close" onclick="closeAuditLogModal()">&times;</button>
+            </div>
+
+            <div class="modal-body"
+                style="flex: 1; overflow-y: auto; padding: 20px; background: rgba(15, 23, 42, 0.95);">
+                <!-- Filter Bar -->
+                <div
+                    style="display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap;">
+                    <div style="display: flex; gap: 10px; flex: 1; min-width: 280px; align-items: center;">
+                        <input type="text" id="audit-search-input" class="form-input"
+                            placeholder="Search logs by email, query, state, or risk..." oninput="filterAuditLogsUI()"
+                            style="padding: 7px 12px; font-size: 0.85rem;">
+                        <select id="audit-month-filter" class="form-input" onchange="filterAuditLogsUI()"
+                            style="width: 170px; padding: 7px 10px; font-size: 0.85rem;">
+                            <option value="all">All Months</option>
+                        </select>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span id="audit-count-badge"
+                            style="font-size: 0.8rem; color: var(--text-sub); font-weight: 500;">Showing 0 logs</span>
+                        <button class="action-btn" id="audit-toggle-all-btn" onclick="toggleAllMonthsCollapse()"
+                            style="font-size: 0.78rem; padding: 6px 10px;">
+                            Collapse All
+                        </button>
+                        <button class="action-btn success" onclick="exportAuditLogsCSV()" style="padding: 7px 14px;">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"
+                                viewBox="0 0 24 24">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                            Export CSV
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Audit Log Table -->
+                <div
+                    style="overflow-x: auto; border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; background: rgba(0,0,0,0.15);">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 0.86rem;">
+                        <thead>
+                            <tr
+                                style="background: rgba(255,255,255,0.04); border-bottom: 1px solid rgba(255,255,255,0.1); text-align: left;">
+                                <th style="padding: 12px 14px; font-weight: 600;">Timestamp</th>
+                                <th style="padding: 12px 14px; font-weight: 600;">User / Org</th>
+                                <th style="padding: 12px 14px; font-weight: 600;">Action Type</th>
+                                <th style="padding: 12px 14px; font-weight: 600;">Query Target / Search Term</th>
+                                <th style="padding: 12px 14px; font-weight: 600;">State / Details</th>
+                                <th style="padding: 12px 14px; font-weight: 600; text-align: center;">Risk Level</th>
+                            </tr>
+                        </thead>
+                        <tbody id="audit-log-table-body">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="action-btn" onclick="closeAuditLogModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modular JavaScript Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/user_analytics.js"></script>
+    <script src="js/billing.js"></script>
+    <script src="js/audit.js"></script>
+    <script src="js/user_dashboard.js"></script>
+
+    <!-- Page Lifecycle Listener -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Dismiss active modal on clicking backdrop
+            document.querySelectorAll('.modal-overlay').forEach(overlay => {
+                overlay.addEventListener('click', (e) => {
+                    if (e.target === overlay) {
+                        overlay.classList.remove('active');
+                    }
+                });
+            });
+
+            // Dismiss active modal on pressing Escape
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
+                }
+            });
+
+            // Restore collapsed/expanded sidebar state
+            restoreSidebarState();
+
+            // Initialize profile and fetch dashboard stats
+            Promise.all([initProfile(), fetchStats()]).finally(() => {
+                document.getElementById('loading-view').style.display = 'none';
+                document.getElementById('dashboard-view').style.display = 'flex';
+            });
+        });
+
+        // ── Sidebar Toggle Function ──
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            const mainContent = document.querySelector('.main-content') || document.querySelector('.dashboard-main');
+            const toggleIcon = document.querySelector('.toggle-icon');
+
+            if (sidebar) {
+                sidebar.classList.toggle('collapsed');
+                document.body.classList.toggle('sidebar-collapsed');
+
+                if (toggleIcon) {
+                    toggleIcon.style.transform = sidebar.classList.contains('collapsed') ? 'rotate(180deg)' : 'rotate(0deg)';
+                }
+            }
+        }
+
+        // Ctrl+B keyboard shortcut
+        document.addEventListener('keydown', function (e) {
+            if (e.ctrlKey && e.key === 'b') {
+                e.preventDefault();
+                toggleSidebar();
+            }
+        });
+    </script>
+</body>
+
+</html>

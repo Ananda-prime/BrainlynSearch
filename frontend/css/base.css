@@ -1,0 +1,127 @@
+/* ═══════════════════════════════════════════════════════════════
+   BRAINLYN AI SEARCH - GLOBAL BASE DESIGN SYSTEM & TOKENS
+   ═══════════════════════════════════════════════════════════════ */
+
+:root {
+    /* Color Palette */
+    --bg: #0b0f19;
+    --card-bg: rgba(22, 28, 45, 0.72);
+    --card-border: rgba(255, 255, 255, 0.12);
+    --border: rgba(255, 255, 255, 0.1);
+    
+    --primary: #6366f1;
+    --primary-hover: #4f46e5;
+    --primary-glow: rgba(99, 102, 241, 0.35);
+    
+    --accent-purple: #a855f7;
+    --accent-emerald: #10b981;
+    --accent-amber: #f59e0b;
+    --accent-rose: #ef4444;
+    --accent-cyan: #06b6d4;
+
+    --green: #00ff9d;
+    --purple: #b057ff;
+    --purple-dark: #6a35ff;
+    --orange: #ff8c00;
+    --blue: #60a5fa;
+
+    --text-main: #f8fafc;
+    --text-sub: #94a3b8;
+    --text-muted: #64748b;
+    
+    --input-bg: rgba(15, 23, 42, 0.6);
+    --input-border: rgba(255, 255, 255, 0.15);
+    --input-focus: #6366f1;
+    
+    --success-green: #10b981;
+    --warning-yellow: #f59e0b;
+    --error-red: #ef4444;
+    
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+    --radius-xl: 20px;
+    
+    --shadow-subtle: 0 4px 20px rgba(0, 0, 0, 0.25);
+    --shadow-elevated: 0 10px 35px -5px rgba(0, 0, 0, 0.5);
+    --shadow-modal: 0 25px 60px -12px rgba(0, 0, 0, 0.85);
+    --glow-primary: 0 0 25px rgba(99, 102, 241, 0.25);
+}
+
+/* Global Reset & Base Typography */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    width: 100%;
+    min-height: 100vh;
+    background-color: #070b14;
+}
+
+body {
+    width: 100%;
+    min-height: 100vh;
+    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: transparent;
+    color: var(--text-main);
+    overflow-x: hidden;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    position: relative;
+}
+
+/* Ambient Cyber Glow Background with Legal Pillars Watermark (Common Across All Views) */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+    background-image:
+        radial-gradient(ellipse at 80% 25%, rgba(7, 11, 20, 0.4) 0%, rgba(9, 13, 22, 0.75) 55%, rgba(7, 11, 20, 0.95) 100%),
+        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.18) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(168, 85, 247, 0.14) 0px, transparent 50%),
+        url('/legal_bg.png');
+    background-size: cover;
+    background-position: top right;
+    background-repeat: no-repeat;
+    pointer-events: none;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(15, 23, 42, 0.6);
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary);
+}
+
+/* Global Spinners */
+.spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid rgba(255, 255, 255, 0.15);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}

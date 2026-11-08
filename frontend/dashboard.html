@@ -66,6 +66,10 @@
             --blue-border: rgba(96, 165, 250, 0.65);
         }
 
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
         [data-theme="light"] {
             --bg: #f8fafc;
             --card-bg: #ffffff;
@@ -414,7 +418,7 @@
         /* --- Stat Cards (Premium) --- */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
             gap: 16px;
             margin-bottom: 25px;
         }
@@ -448,11 +452,15 @@
         .stat-card.orange::after { background: var(--orange); box-shadow: 0 0 12px var(--orange); }
         .stat-card.green::after  { background: var(--green);  box-shadow: 0 0 12px var(--green); }
         .stat-card.blue::after   { background: var(--blue);   box-shadow: 0 0 12px var(--blue); }
+        .stat-card.risk-high::after { background: #ef4444; box-shadow: 0 0 12px #ef4444; }
+        .stat-card.risk-low::after  { background: #10b981; box-shadow: 0 0 12px #10b981; }
 
-        .stat-card.green  { box-shadow: var(--card-shadow-green); border-color: var(--green-border); }
-        .stat-card.purple { box-shadow: var(--card-shadow-purple); border-color: var(--purple-border); }
-        .stat-card.orange { box-shadow: var(--card-shadow-orange); border-color: var(--orange-border); }
-        .stat-card.blue   { box-shadow: var(--card-shadow-blue); border-color: var(--blue-border); }
+        .stat-card.green     { box-shadow: var(--card-shadow-green); border-color: var(--green-border); }
+        .stat-card.purple    { box-shadow: var(--card-shadow-purple); border-color: var(--purple-border); }
+        .stat-card.orange    { box-shadow: var(--card-shadow-orange); border-color: var(--orange-border); }
+        .stat-card.blue      { box-shadow: var(--card-shadow-blue); border-color: var(--blue-border); }
+        .stat-card.risk-high { box-shadow: 0 4px 20px rgba(239, 68, 68, 0.22); border-color: rgba(239, 68, 68, 0.45); }
+        .stat-card.risk-low  { box-shadow: 0 4px 20px rgba(16, 185, 129, 0.22); border-color: rgba(16, 185, 129, 0.45); }
 
         /* Circular icon on the left */
         .icon-circle {
@@ -471,6 +479,8 @@
         .stat-card.orange .icon-circle { border-color: var(--orange); color: var(--orange); background: var(--orange-light); }
         .stat-card.green  .icon-circle { border-color: var(--green);  color: var(--green);  background: var(--green-light); }
         .stat-card.blue   .icon-circle { border-color: var(--blue);   color: var(--blue);   background: var(--blue-light); }
+        .stat-card.risk-high .icon-circle { border-color: #ef4444; color: #ef4444; background: rgba(239, 68, 68, 0.15); }
+        .stat-card.risk-low  .icon-circle { border-color: #10b981; color: #10b981; background: rgba(16, 185, 129, 0.15); }
 
         .stat-body {
             display: flex;
@@ -1099,6 +1109,17 @@
                     <div class="stat-subtitle" id="dash-courts-label">—</div>
                 </div>
             </div>
+            <!-- Card 5: Litigation Risk Profile -->
+            <div class="stat-card risk-low" id="dash-risk-card">
+                <div class="icon-circle" id="dash-risk-icon">
+                    <svg style="width:20px;height:20px" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                </div>
+                <div class="stat-body">
+                    <div class="stat-title">Risk Profile</div>
+                    <div class="stat-value" id="dash-risk-val" style="font-size: 1.45rem; letter-spacing: -0.3px;">LOW RISK</div>
+                    <div class="stat-subtitle" id="dash-risk-sub">No Criminal Record</div>
+                </div>
+            </div>
         </div>
 
         <div class="charts-grid">
@@ -1225,6 +1246,7 @@
                         <th style="text-align: center; width: 70px;">S.No.</th>
                         <th>Case Number</th>
                         <th>Party Name</th>
+                        <th>Case Type</th>
                         <th>Date of Filing</th>
                         <th>Status</th>
                         <th>Court Type</th>
@@ -1514,12 +1536,34 @@
             let final = 0;
             let courts = { 'Supreme Court': 0, 'High Court': 0, 'District Court': 0 };
             let years = {};
+            let criminalCount = 0;
+            let civilCount = 0;
+
+            function isCriminalRecord(r) {
+                if (!r) return false;
+                const ct = String(r.case_type || r.caseType || '').toUpperCase().trim();
+                const cNum = String(r.case_number || r.caseNumber || '').toUpperCase().trim();
+                const p = String(r.party_name || '').toUpperCase().trim();
+                const d = String(r.disposal_nature || '').toUpperCase().trim();
+                const acts = Array.isArray(r.acts_sections) ? r.acts_sections.map(a => JSON.stringify(a).toUpperCase()).join(' ') : '';
+
+                if (ct.includes('CRIMINAL') || ct === 'CRIMINAL') return true;
+                if (/\b(CC|CRA|CRMP|CRMC|BAIL|SPL\.?\s?C|SESSIONS|FIR|POLICE|IPC|CRPC|POCSO|NDPS|SC\/ST|CALENDAR CASE)\b/.test(ct)) return true;
+                if (/\b(STATE OF|STATE VS|POLICE STATION)\b/.test(p)) return true;
+                if (/\b(IPC|CRPC|INDIAN PENAL CODE|CODE OF CRIMINAL PROCEDURE)\b/.test(acts)) return true;
+                return false;
+            }
 
             records.forEach(r => {
-                if (r.disposal_is_final) final++; else pending++;
+                const isCrim = isCriminalRecord(r);
+                if (isCrim) criminalCount++; else civilCount++;
 
+                const isFinal = r.disposal_is_final || (r.case_status && r.case_status.toUpperCase() === 'DISPOSED');
+                if (isFinal) final++; else pending++;
+
+                const isHigh = r.source_index === 'high_court_records' || r.court_type === 'high';
                 const cType = r.source_index === 'supreme_court_records' ? 'Supreme Court' :
-                    r.source_index === 'high_court_records' ? 'High Court' : 'District Court';
+                    isHigh ? 'High Court' : 'District Court';
                 courts[cType]++;
 
                 const dateStr = r.registration_date || r.date_of_registration;
@@ -1546,6 +1590,43 @@
                 document.getElementById('dash-courts-label').innerText = courtShortNames[0] || '—';
             }
 
+            // Populate Risk Profile Card
+            const isHighRisk = (criminalCount > 0);
+            const riskCard = document.getElementById('dash-risk-card');
+            const riskVal = document.getElementById('dash-risk-val');
+            const riskSub = document.getElementById('dash-risk-sub');
+            const riskIcon = document.getElementById('dash-risk-icon');
+
+            if (riskCard) {
+                if (isHighRisk) {
+                    riskCard.className = 'stat-card risk-high';
+                    if (riskVal) {
+                        riskVal.innerText = 'HIGH RISK';
+                        riskVal.style.color = '#ef4444';
+                    }
+                    if (riskSub) {
+                        riskSub.innerText = `${criminalCount} Criminal Case${criminalCount > 1 ? 's' : ''} Detected`;
+                        riskSub.style.color = '#fca5a5';
+                    }
+                    if (riskIcon) {
+                        riskIcon.innerHTML = `<svg style="width:20px;height:20px" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>`;
+                    }
+                } else {
+                    riskCard.className = 'stat-card risk-low';
+                    if (riskVal) {
+                        riskVal.innerText = 'LOW RISK';
+                        riskVal.style.color = '#10b981';
+                    }
+                    if (riskSub) {
+                        riskSub.innerText = '0 Criminal Record (Civil Only)';
+                        riskSub.style.color = '#6ee7b7';
+                    }
+                    if (riskIcon) {
+                        riskIcon.innerHTML = `<svg style="width:20px;height:20px" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`;
+                    }
+                }
+            }
+
             // Generate Text Summary
             let partyNames = new Set();
             let primaryPartyName = 'User';
@@ -1566,7 +1647,15 @@
             if (partyNames.size > 2) nameList += ' and others';
             if (!nameList) nameList = 'various parties';
 
-            let summaryText = `This report provides an analytical overview of <strong>${records.length}</strong> selected legal cases, primarily involving <strong>${nameList}</strong>. Out of these, <strong style="color: var(--green);">${pending}</strong> cases are currently pending resolution, while <strong style="color: var(--orange);">${final}</strong> cases have been fully disposed. The records span across ${Object.keys(courts).filter(c => courts[c] > 0).join(', ')}.`;
+            const riskBadgeHtml = isHighRisk 
+                ? `<span style="background: rgba(239, 68, 68, 0.16); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4); padding: 3px 9px; border-radius: 6px; font-weight: 700; font-size: 0.85rem; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 5px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>HIGH RISK</span>`
+                : `<span style="background: rgba(16, 185, 129, 0.16); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.4); padding: 3px 9px; border-radius: 6px; font-weight: 700; font-size: 0.85rem; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 5px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>LOW RISK</span>`;
+
+            const riskExplanation = isHighRisk
+                ? `Litigation due diligence tags this subject as ${riskBadgeHtml} due to <strong>${criminalCount} criminal proceeding${criminalCount > 1 ? 's' : ''}</strong> identified on judicial record.`
+                : `Litigation due diligence tags this subject as ${riskBadgeHtml} with <strong>no criminal proceedings</strong> found (${civilCount} non-criminal / civil record${civilCount > 1 ? 's' : ''}).`;
+
+            let summaryText = `This report provides an analytical due-diligence assessment of <strong>${records.length}</strong> selected court records, primarily involving <strong>${nameList}</strong>. ${riskExplanation} Out of these, <strong style="color: var(--green);">${pending}</strong> cases are currently pending resolution, while <strong style="color: var(--orange);">${final}</strong> cases have been fully disposed across ${Object.keys(courts).filter(c => courts[c] > 0).join(', ')}.`;
             document.getElementById('summary-text').innerHTML = summaryText;
 
             // Set document title so PDF downloads with "name_BrainlynsearchAI"
@@ -1671,13 +1760,20 @@
             }
 
             tbody.innerHTML = records.map((r, index) => {
+                const isHigh = r.source_index === 'high_court_records' || r.court_type === 'high';
                 const cType = r.source_index === 'supreme_court_records' ? 'Supreme Court' :
-                    r.source_index === 'high_court_records' ? 'High Court' : 'District Court';
+                    isHigh ? 'High Court' : 'District Court';
 
-                const isFinal = r.disposal_is_final;
+                const isFinal = r.disposal_is_final || (r.case_status && r.case_status.toUpperCase() === 'DISPOSED');
                 const statusHtml = isFinal
                     ? '<span class="badge final">DISPOSED</span>'
                     : '<span class="badge pending">PENDING</span>';
+
+                const isCrim = isCriminalRecord(r);
+                const rawCt = (r.case_type || (isCrim ? 'CRIMINAL' : 'CIVIL')).toUpperCase();
+                const caseTypeBadge = isCrim
+                    ? `<span style="background: rgba(239, 68, 68, 0.16); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); padding: 3px 8px; border-radius: 4px; font-size: 0.72rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="M7 21h10"></path><path d="M12 3v18"></path><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"></path></svg>CRIMINAL</span>`
+                    : `<span style="background: rgba(59, 130, 246, 0.16); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.4); padding: 3px 8px; border-radius: 4px; font-size: 0.72rem; font-weight: 600; display: inline-flex; align-items: center;">${rawCt}</span>`;
 
                 // Format Date
                 let dateStr = r.registration_date || r.date_of_registration || 'N/A';
@@ -1709,6 +1805,7 @@
                         <td style="text-align: center;">${sNoHtml}</td>
                         <td style="font-family: monospace; font-size: 0.85rem; letter-spacing: 0.5px;">${r.cnr || r.diary_number || 'N/A'}</td>
                         <td style="color: var(--text-main); font-weight: 500;">${r.party_name || 'N/A'}</td>
+                        <td>${caseTypeBadge}</td>
                         <td>${dateHtml}</td>
                         <td>${statusHtml}</td>
                         <td>${courtHtml}</td>
@@ -1721,7 +1818,7 @@
         async function downloadPDF() {
             const btn = document.getElementById('downloadBtn');
             const originalText = btn.innerHTML;
-            btn.innerHTML = '⏳ Generating PDF...';
+            btn.innerHTML = `<svg class="spin" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:inline-block;vertical-align:-2px;margin-right:6px;animation:spin 1s linear infinite;"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>Generating PDF...`;
             btn.style.pointerEvents = 'none';
             btn.style.opacity = '0.6';
 
